@@ -12,11 +12,11 @@ public:
 	void PutUK(int i);
 	int GetUK();
 
-	void PrintError(char*, char*);
+	void PrintError(string, string);
 	int Scanner(LEX lex);
-	void GetData(char*);
+	void GetData(string);
 
-	TScanner(char*);
+	TScanner(string);
 	~TScanner() {}
 };
 

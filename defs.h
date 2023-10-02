@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <fstream>
+using namespace std;
 
 #define MAX_TEXT 100000     //макисмальная длина текста ИМ
 #define MAX_LEX 100         //максимальная длина лексемы
@@ -12,7 +14,7 @@ typedef char LEX[MAX_LEX];   //лексема
 #define TInt       1
 #define TShort     2
 #define TLong      3
-#define TDouble    4
+#define TFloat    4
 #define TMain      5
 #define TReturn    6
 #define TWhile     7
@@ -23,7 +25,7 @@ typedef char LEX[MAX_LEX];   //лексема
 
 //константы
 #define TConstInt       30
-#define TConstDouble    31
+#define TConstFloat    31
 
 //специальные знаки
 #define TComma      40
