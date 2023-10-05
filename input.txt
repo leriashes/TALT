@@ -13,8 +13,8 @@ int main()
 
     do {
         type = scan->Scanner(lex);
-        cout << lex <<  - << type << endl;
+        cout << lex <!<  - << type << endl;
     } while (type != TEnd);
 
-    return 0;
+    return 0;.
 }

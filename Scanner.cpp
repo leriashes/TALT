@@ -29,14 +29,14 @@ void TScanner::PrintError(string error, string a)
 {
 	if (a[0] == '\0')
 	{
-		cout << "Ошибка: " << error;
+		cout << "--- Ошибка: " << error << " ---  ";
 	}
 	else
 	{
-		cout << "Ошибка: " << error << ". Неверный символ " << a;
+		cout << "--- Ошибка: " << error << ". Неверный символ: \'" << a << "\' ---  ";
 	}
 
-	exit(0);
+	//exit(0);
 }
 
 int TScanner::Scanner(LEX lex)
@@ -226,8 +226,9 @@ start:
 	}
 	else 
 	{
+		lex[i++] = text[uk++];	//????
 		PrintError("Неверный символ", lex);
-		uk++;
+		//uk++;
 		return TError;
 	}
 
