@@ -82,8 +82,14 @@ start:
 
 		while (text[uk] >= '0' && text[uk] <= '9')
 		{
-			if (i < MAX_LEX - 1) lex[i++] = text[uk++];
+			if (i < MAX_CONST - 1) lex[i++] = text[uk++];
 			else uk++;
+		}
+
+		if (i == MAX_CONST - 1)
+		{
+			PrintError("Слишком длинная константа", lex);
+			return TError;
 		}
 
 		if (text[uk] == '.')
@@ -235,10 +241,16 @@ start:
 N1:
 	while (text[uk] >= '0' && text[uk] <= '9')
 	{
-		if (i < MAX_LEX - 1)
+		if (i < MAX_CONST - 1)
 			lex[i++] = text[uk++];
 		else
 			uk++;
+	}
+
+	if (i == MAX_CONST - 1)
+	{
+		PrintError("Слишком длинная константа", lex);
+		return TError;
 	}
 
 	return TConstFloat;
