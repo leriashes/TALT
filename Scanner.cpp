@@ -1,6 +1,6 @@
 #include "Scanner.h"
 
-TScanner::TScanner(string FileName)
+TScanner::TScanner(char* FileName)
 {
 	GetData(FileName);
 	PutUK(0);
@@ -25,15 +25,15 @@ int TScanner::GetUK()
 }
 
 //выдать сообщение об ошибке
-void TScanner::PrintError(string error, string a)
+void TScanner::PrintError(const char* error, char* a)
 {
 	if (a[0] == '\0')
 	{
-		cout << "--- Ошибка: " << error << " ---  ";
+		printf("--- Ошибка: %s ---   \n", error);
 	}
 	else
 	{
-		cout << "--- Ошибка: " << error << ". Неверный символ: \'" << a << "\' ---  ";
+		printf("--- Ошибка: %s. \'%s\' ---  \n", error, a);
 	}
 
 	//exit(0);
@@ -82,11 +82,11 @@ start:
 
 		while (text[uk] >= '0' && text[uk] <= '9')
 		{
-			if (i < MAX_CONST - 1) lex[i++] = text[uk++];
+			if (i < MAX_CONST + 1) lex[i++] = text[uk++];
 			else uk++;
 		}
 
-		if (i == MAX_CONST - 1)
+		if (i == MAX_CONST + 1)
 		{
 			PrintError("Слишком длинная константа", lex);
 			return TError;
@@ -232,22 +232,21 @@ start:
 	}
 	else 
 	{
-		lex[i++] = text[uk++];	//????
+		lex[i++] = text[uk++];
 		PrintError("Неверный символ", lex);
-		//uk++;
 		return TError;
 	}
 
 N1:
 	while (text[uk] >= '0' && text[uk] <= '9')
 	{
-		if (i < MAX_CONST - 1)
+		if (i < MAX_CONST + 2)
 			lex[i++] = text[uk++];
 		else
 			uk++;
 	}
 
-	if (i == MAX_CONST - 1)
+	if (i == MAX_CONST + 2)
 	{
 		PrintError("Слишком длинная константа", lex);
 		return TError;
@@ -256,14 +255,14 @@ N1:
 	return TConstFloat;
 }
 
-void TScanner::GetData(string FileName)
+void TScanner::GetData(char* FileName)
 {
 	ifstream file(FileName);
 	char symb;
 
 	if (!file.is_open())
 	{
-		PrintError("Отсутствует входной файл", "");
+		PrintError("Отсутствует входной файл", nullptr);
 		exit(1);
 	}
 	else
@@ -276,7 +275,7 @@ void TScanner::GetData(string FileName)
 			if (!file.eof()) text[i++] = symb;
 			if (i >= MAX_TEXT - 1)
 			{
-				PrintError("Слишком большой размер исходного модуля", "");
+				PrintError("Слишком большой размер исходного модуля", nullptr);
 				break;
 			}
 		}

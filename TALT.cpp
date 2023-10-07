@@ -11,7 +11,9 @@ int main()
     int type;
     LEX lex;
 
-    scan = new TScanner("input.txt");
+    char filename[] = "input.txt";
+
+    scan = new TScanner(filename);
 
     do {
         type = scan->Scanner(lex);
