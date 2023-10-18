@@ -1,3 +1,6 @@
+short flot =(
+int k;
+
 while (text[uk] >= '0' && text[uk] <= '9')
 	{
 		if (i < MAX_CONST + 2)

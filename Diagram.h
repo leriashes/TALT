@@ -4,7 +4,7 @@
 class TDiagram
 {
 private:
-	TScanner* sc;
+	TScanner* scan;
 
 	void D();		//описание данных
 	void F();		//функция
@@ -23,7 +23,7 @@ private:
 	void K();		//вызов функции
 
 public:
-	TDiagram(TScanner* scan) { sc = scan; }
+	TDiagram(TScanner* s) { scan = s; }
 	~TDiagram() {}
 
 	void S();		//программа

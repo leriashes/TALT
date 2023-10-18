@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include "defs.h"
 #include "Scanner.h"
-
+#include "Diagram.h"
 
 int main()
 {
@@ -15,10 +15,14 @@ int main()
 
     scan = new TScanner(filename);
 
-    do {
+    /*do {
         type = scan->Scanner(lex);
         cout << lex << " - тип " << type << endl;
     } while (type != TEnd);
+    */
+
+    TDiagram* diag = new TDiagram(scan);
+    diag->S();
 
     return 0;
 }
