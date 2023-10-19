@@ -1,4 +1,4 @@
-short flot =(
+short flot = -3 * (a - k / 2);
 int k;
 
 while (text[uk] >= '0' && text[uk] <= '9')

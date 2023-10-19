@@ -13,6 +13,7 @@ public:
 	int GetUK();
 
 	void PrintError(const char*, char*);
+	void PrintError(const char*);
 	int Scanner(LEX lex);
 	void GetData(char*);
 

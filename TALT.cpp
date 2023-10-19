@@ -24,5 +24,12 @@ int main()
     TDiagram* diag = new TDiagram(scan);
     diag->S();
 
+    type = scan->Scanner(lex);
+
+    if (type != TEnd)
+    {
+        scan->PrintError("Лишний текст в конце программы", lex);
+    }
+
     return 0;
 }

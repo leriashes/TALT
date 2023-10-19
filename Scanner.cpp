@@ -29,12 +29,20 @@ void TScanner::PrintError(const char* error, char* a)
 {
 	if (a[0] == '\0')
 	{
-		printf("--- Ошибка: %s ---   \n", error);
+		printf("--- Ошибка: %s. ---   \n", error);
 	}
 	else
 	{
 		printf("--- Ошибка: %s. \'%s\' ---  \n", error, a);
 	}
+
+	//exit(0);
+}
+
+//выдать сообщение об ошибке
+void TScanner::PrintError(const char* error)
+{
+	printf("--- Ошибка: %s. ---   \n", error);
 
 	//exit(0);
 }

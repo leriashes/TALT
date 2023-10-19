@@ -13,7 +13,7 @@ void TDiagram::S()			//программа
 {
 	LEX lex;
 	int type;
-	int uk1;
+	int uk1, uk2;
 
 	uk1 = scan->GetUK();
 	type = scan->Scanner(lex);
@@ -22,19 +22,18 @@ void TDiagram::S()			//программа
 	{
 		if (type == TShort || type == TLong)
 		{
-			uk1 = scan->GetUK();
+			uk2 = scan->GetUK();
 			type = scan->Scanner(lex);
 
 			if (type != TInt)
 			{
-				scan->PutUK(uk1);
+				scan->PutUK(uk2);
 			}
 		}
 
-		uk1 = scan->GetUK();
+		//uk2 = scan->GetUK();
 		type = scan->Scanner(lex);
-
-		scan->PutUK(uk1);
+		//scan->PutUK(uk2);
 
 		if (type == TMain)
 		{
@@ -43,6 +42,7 @@ void TDiagram::S()			//программа
 		else if (type == TIdent)
 		{
 			type = scan->Scanner(lex);
+			scan->PutUK(uk1);
 
 			if (type == TLS)
 			{
@@ -69,16 +69,35 @@ void TDiagram::S()			//программа
 
 void TDiagram::D()			//описание данных
 // 
-//        ----------------------- , ----
-//        |                 -----      |
-//	      |         -- = ---| V |---   |
-//       \|/        |       -----  |   |
-//--------.--- a ------------------------ ; --->
+//  --- long ---                  ----------------------- , ----
+//  |-----------|--- int ---      |                 -----      |
+//	|-- short --           |      |         -- = ---| V |---   |
+//  |                      |     \|/        |       -----  |   |
+//------ float -------------------.--- a ------------------------ ; --->
 //
 {
 	LEX lex;
 	int type;
 	int uk1;
+
+	type = scan->Scanner(lex);
+
+	if (type != TLong && type != TShort && type != TInt && type != TFloat)
+	{
+		scan->PrintError("Ожидался тип", lex);
+	}
+
+	if (type == TLong || type == TShort)
+	{
+		uk1 = scan->GetUK();
+		type = scan->Scanner(lex);
+
+		if (type != TInt)
+		{
+			scan->PutUK(uk1);
+		}
+	}
+
 
 	do
 	{
@@ -89,14 +108,12 @@ void TDiagram::D()			//описание данных
 			scan->PrintError("Ожидался идентификатор", lex);
 		}
 
-		uk1 = scan->GetUK();
 		type = scan->Scanner(lex);
 
 		if (type == TSave)
 		{
 			V();
 
-			uk1 = scan->GetUK();
 			type = scan->Scanner(lex);
 		}
 
@@ -119,7 +136,6 @@ void TDiagram::F()			//функция
 {
 	LEX lex;
 	int type;
-	int uk1;
 
 	type = scan->Scanner(lex);
 
@@ -206,14 +222,14 @@ void TDiagram::A()			//оператор
 //        |      -----           |
 //        |      -----           |
 //        |   ---| P |---        |
-//		  |  |	 _____   |       |
+//		  |  |	 -----   |       |
 //-----------|-----------|-- ; -------->
 //           |   -----   |  
 //           |---| K |---|  
 //           |   -----   |  
 //           |   -----   |
 //           |---| R |---|
-//		     |	 _____   |
+//		     |	 -----   |
 //           |   -----   |   
 //            ---| B |---    
 //               -----       
@@ -251,7 +267,6 @@ void TDiagram::A()			//оператор
 		}
 		else if (type == TIdent)
 		{
-			uk1 = scan->GetUK();
 			type = scan->Scanner(lex);
 			scan->PutUK(uk1);
 
@@ -265,7 +280,6 @@ void TDiagram::A()			//оператор
 			}
 		}
 
-		uk1 = scan->GetUK();
 		type = scan->Scanner(lex);
 
 		if (type != TSemicolon)
@@ -286,7 +300,6 @@ void TDiagram::W()			//while
 {
 	LEX lex;
 	int type;
-	int uk1;
 
 	type = scan->Scanner(lex);
 
@@ -402,8 +415,8 @@ void TDiagram::V()			//Выражение
 	do
 	{
 		Z();
-		type = scan->Scanner(lex);
 		uk1 = scan->GetUK();
+		type = scan->Scanner(lex);
 	} while (type == TEq || type == TNEq);
 
 	scan->PutUK(uk1);
@@ -432,8 +445,8 @@ void TDiagram::Z()			//Сравнение
 	do
 	{
 		Y();
-		type = scan->Scanner(lex);
 		uk1 = scan->GetUK();
+		type = scan->Scanner(lex);
 	} while (type == TLT || type == TGT || type == TLE || type == TGE);
 
 	scan->PutUK(uk1);
@@ -460,8 +473,8 @@ void TDiagram::M()			//Множитель
 	do
 	{
 		N();
-		type = scan->Scanner(lex);
 		uk1 = scan->GetUK();
+		type = scan->Scanner(lex);
 	} while (type == TMult || type == TDiv || type == TMod);
 
 	scan->PutUK(uk1);
@@ -486,8 +499,8 @@ void TDiagram::Y()			//Сдвиг
 	do
 	{
 		L();
-		type = scan->Scanner(lex);
 		uk1 = scan->GetUK();
+		type = scan->Scanner(lex);
 	} while (type == TLShift || type == TRShift);
 
 	scan->PutUK(uk1);
@@ -567,9 +580,6 @@ void TDiagram::N()			//Со знаком
 	}
 	else if (type == TIdent)
 	{
-		int uk2;
-		
-		uk2 = scan->GetUK();
 		type = scan->Scanner(lex);
 
 		if (type == TLS)
@@ -595,7 +605,6 @@ void TDiagram::K()			//Вызов функции
 {
 	LEX lex;
 	int type;
-	int uk1;
 
 	type = scan->Scanner(lex);
 
