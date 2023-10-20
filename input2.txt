@@ -1,0 +1,23 @@
+short j = 4, k;
+
+float p ()
+{
+    ;
+
+    while (k < 8)
+    {
+        k = 8 - j;
+        j = j + 2;
+
+        break;
+    }
+
+    return k;
+}
+
+long int t ()
+{
+    float a = -3 * 2 / k + (9 - j) - 7;
+    pr = p();
+}
+

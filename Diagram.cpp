@@ -23,7 +23,7 @@ int TDiagram::LookForward(int k)
 
 
 
-void TDiagram::S()			//программа
+void TDiagram::S()			//Программа
 //               -----
 //            ---| D |---
 //		     |	 -----   |
@@ -74,7 +74,10 @@ void TDiagram::S()			//программа
 		}
 		else
 		{
-			type = scan->Scanner(lex);
+			for (int i = 0; i < k; i++)
+			{
+				type = scan->Scanner(lex);
+			}
 			scan->PrintError("Ожидался идентификатор");
 		}
 
@@ -84,7 +87,7 @@ void TDiagram::S()			//программа
 
 
 
-void TDiagram::D()			//описание данных
+void TDiagram::D()			//Описание данных
 // 
 //  --- long ---                  ----------------------- , ----
 //  |-----------|--- int ---      |                 -----      |
@@ -142,7 +145,7 @@ void TDiagram::D()			//описание данных
 
 
 
-void TDiagram::F()			//функция
+void TDiagram::F()			//Функция
 // 
 //  --- long ---             
 //  |-----------|--- int ---  
@@ -246,7 +249,7 @@ void TDiagram::Q()			//Составной оператор
 
 
 
-void TDiagram::A()			//оператор
+void TDiagram::A()			//Оператор
 //               -----
 //        -------| Q |------------
 //		  |	     -----           |
@@ -630,7 +633,7 @@ void TDiagram::N()			//Со знаком
 
 		if (type != TConstInt && type != TConstFloat)
 		{
-			scan->PrintError("Ожидалось элементарное выражение");
+			scan->PrintError("Ожидалось выражение");
 
 		}
 	}
