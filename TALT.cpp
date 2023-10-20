@@ -28,7 +28,7 @@ int main()
 
     if (type != TEnd)
     {
-        scan->PrintError("Лишний текст в конце программы", lex);
+        scan->PrintError("Лишний текст в конце программы");
     }
     else
     {

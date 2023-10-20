@@ -1,5 +1,28 @@
 #include "Diagram.h"
 
+int TDiagram::LookForward(int k) 
+{
+	LEX lex;
+	int  savedPointer = scan->GetUK();
+	int  savedLine = scan->GetLine();
+	int  savedPos = scan->GetPos();
+
+	int  nextType;
+
+	for (int i = 0; i < k; i++)
+	{
+		nextType = scan->Scanner(lex);
+	}
+
+	scan->SetLine(savedLine);
+	scan->SetPos(savedPos);
+	scan->PutUK(savedPointer);
+
+	return nextType;
+}
+
+
+
 void TDiagram::S()			//программа
 //               -----
 //            ---| D |---
@@ -13,35 +36,32 @@ void TDiagram::S()			//программа
 {
 	LEX lex;
 	int type;
-	int uk1, uk2;
 
-	uk1 = scan->GetUK();
-	type = scan->Scanner(lex);
+	type = LookForward(1);
 
 	while (type == TShort || type == TLong || type == TInt || type == TFloat)
 	{
+		int k = 2;
+
 		if (type == TShort || type == TLong)
 		{
-			uk2 = scan->GetUK();
-			type = scan->Scanner(lex);
+			type = LookForward(2);
 
-			if (type != TInt)
+			if (type == TInt)
 			{
-				scan->PutUK(uk2);
+				k = 3;
 			}
 		}
 
-		type = scan->Scanner(lex);
+		type = LookForward(k);
 
 		if (type == TMain)
 		{
-			scan->PutUK(uk1);
 			F();
 		}
 		else if (type == TIdent)
 		{
-			type = scan->Scanner(lex);
-			scan->PutUK(uk1);
+			type = LookForward(k + 1);
 
 			if (type == TLS)
 			{
@@ -54,14 +74,12 @@ void TDiagram::S()			//программа
 		}
 		else
 		{
-			scan->PrintError("Ожидался идентификатор", lex);
+			type = scan->Scanner(lex);
+			scan->PrintError("Ожидался идентификатор");
 		}
 
-		uk1 = scan->GetUK();
-		type = scan->Scanner(lex);
+		type = LookForward(1);
 	}
-
-	scan->PutUK(uk1);
 }
 
 
@@ -77,23 +95,22 @@ void TDiagram::D()			//описание данных
 {
 	LEX lex;
 	int type;
-	int uk1;
+	int k = 2;
 
 	type = scan->Scanner(lex);
 
 	if (type != TLong && type != TShort && type != TInt && type != TFloat)
 	{
-		scan->PrintError("Ожидался тип", lex);
+		scan->PrintError("Ожидался тип");
 	}
 
 	if (type == TLong || type == TShort)
 	{
-		uk1 = scan->GetUK();
-		type = scan->Scanner(lex);
+		type = LookForward(1);
 
-		if (type != TInt)
+		if (type == TInt)
 		{
-			scan->PutUK(uk1);
+			type = scan->Scanner(lex);
 		}
 	}
 
@@ -104,7 +121,7 @@ void TDiagram::D()			//описание данных
 
 		if (type != TIdent)
 		{
-			scan->PrintError("Ожидался идентификатор", lex);
+			scan->PrintError("Ожидался идентификатор");
 		}
 
 		type = scan->Scanner(lex);
@@ -112,7 +129,6 @@ void TDiagram::D()			//описание данных
 		if (type == TSave)
 		{
 			V();
-
 			type = scan->Scanner(lex);
 		}
 
@@ -120,7 +136,7 @@ void TDiagram::D()			//описание данных
 
 	if (type != TSemicolon)
 	{
-		scan->PrintError("Ожидался символ ';'", lex);
+		scan->PrintError("Ожидался символ ';'");
 	}
 }
 
@@ -128,30 +144,31 @@ void TDiagram::D()			//описание данных
 
 void TDiagram::F()			//функция
 // 
-//		----- a -----                -----
-// -----|			|--- ( --- ) ----| Q |---->
-//		---- main ---				 -----
+//  --- long ---             
+//  |-----------|--- int ---  
+//	|-- short --           |   
+//  |                      | 	 ----- a -----                -----
+// ------ float -----------------|			 |--- ( --- ) ----| Q |---->
+//								 ---- main ---				  -----
 //
 {
 	LEX lex;
 	int type;
-	int uk1;
 
 	type = scan->Scanner(lex);
 
 	if (type != TLong && type != TShort && type != TInt && type != TFloat)
 	{
-		scan->PrintError("Ожидался тип", lex);
+		scan->PrintError("Ожидался тип");
 	}
 
 	if (type == TLong || type == TShort)
 	{
-		uk1 = scan->GetUK();
-		type = scan->Scanner(lex);
+		type = LookForward(1);
 
-		if (type != TInt)
+		if (type == TInt)
 		{
-			scan->PutUK(uk1);
+			type = scan->Scanner(lex);
 		}
 	}
 
@@ -159,21 +176,21 @@ void TDiagram::F()			//функция
 
 	if (type != TMain && type != TIdent)
 	{
-		scan->PrintError("Ожидалось имя функции", lex);
+		scan->PrintError("Ожидалось имя функции");
 	}
 
 	type = scan->Scanner(lex);
 
 	if (type != TLS)
 	{
-		scan->PrintError("Ожидался символ '('", lex);
+		scan->PrintError("Ожидался символ '('");
 	}
 
 	type = scan->Scanner(lex);
 
 	if (type != TRS)
 	{
-		scan->PrintError("Ожидался символ ')'", lex);
+		scan->PrintError("Ожидался символ ')'");
 	}
 
 	Q();
@@ -194,21 +211,19 @@ void TDiagram::Q()			//Составной оператор
 {
 	LEX lex;
 	int type;
-	int uk1;
 
 	type = scan->Scanner(lex);
 
 	if (type != TFLS)
 	{
-		scan->PrintError("Ожидался символ '{'", lex);
+		scan->PrintError("Ожидался символ '{'");
 	}
 
-	uk1 = scan->GetUK();
-	type = scan->Scanner(lex);
-	scan->PutUK(uk1);
+	type = LookForward(1);
 
 	while (type == TShort || type == TLong || type == TInt || type == TFloat || type == TFLS || type == TWhile || type == TIdent || type == TReturn || type == TBreak || type == TSemicolon || type == TMain)
 	{
+
 		if (type == TShort || type == TLong || type == TInt || type == TFloat)
 		{
 			D();
@@ -218,16 +233,14 @@ void TDiagram::Q()			//Составной оператор
 			A();
 		}
 
-		uk1 = scan->GetUK();
-		type = scan->Scanner(lex);
-		scan->PutUK(uk1);
+		type = LookForward(1);
 	}
 
 	type = scan->Scanner(lex);
 
 	if (type != TFRS)
 	{
-		scan->PrintError("Ожидался символ '}'", lex);
+		scan->PrintError("Ожидался символ '}'");
 	}
 }
 
@@ -257,42 +270,34 @@ void TDiagram::A()			//оператор
 {
 	LEX lex;
 	int type;
-	int uk1;
 
-	uk1 = scan->GetUK();
-	type = scan->Scanner(lex);
+	type = LookForward(1);
 
 	if (type == TFLS)
 	{
-		scan->PutUK(uk1);
 		Q();
 	}
 	else if (type == TWhile)
 	{
-		scan->PutUK(uk1);
 		W();
 	}
 	else
 	{
 		if (type == TReturn)
 		{
-			scan->PutUK(uk1);
 			R();
 		}
 		else if (type == TBreak)
 		{
-			scan->PutUK(uk1);
 			B();
 		}
 		else if (type == TMain)
 		{
-			scan->PutUK(uk1);
 			K();
 		}
 		else if (type == TIdent)
 		{
-			type = scan->Scanner(lex);
-			scan->PutUK(uk1);
+			type = LookForward(2);
 
 			if (type == TSave)
 			{
@@ -308,7 +313,7 @@ void TDiagram::A()			//оператор
 
 		if (type != TSemicolon)
 		{
-			scan->PrintError("Ожидался символ ';'", lex);
+			scan->PrintError("Ожидался символ ';'");
 		}
 	}
 }
@@ -329,14 +334,14 @@ void TDiagram::W()			//while
 
 	if (type != TWhile)
 	{
-		scan->PrintError("Ожидался оператор 'while'", lex);
+		scan->PrintError("Ожидался оператор 'while'");
 	}
 
 	type = scan->Scanner(lex);
 
 	if (type != TLS)
 	{
-		scan->PrintError("Ожидался символ '('", lex);
+		scan->PrintError("Ожидался символ '('");
 	}
 
 	V();
@@ -345,7 +350,7 @@ void TDiagram::W()			//while
 
 	if (type != TRS)
 	{
-		scan->PrintError("Ожидался символ ')'", lex);
+		scan->PrintError("Ожидался символ ')'");
 	}
 
 	A();
@@ -367,14 +372,14 @@ void TDiagram::P()			//Присваивание
 
 	if (type != TIdent)
 	{
-		scan->PrintError("Ожидался идентификатор", lex);
+		scan->PrintError("Ожидался идентификатор");
 	}
 
 	type = scan->Scanner(lex);
 
 	if (type != TSave)
 	{
-		scan->PrintError("Ожидался знак =", lex);
+		scan->PrintError("Ожидался знак =");
 	}
 
 	V();
@@ -396,7 +401,7 @@ void TDiagram::R()			//return
 
 	if (type != TReturn)
 	{
-		scan->PrintError("Ожидался оператор 'return'", lex);
+		scan->PrintError("Ожидался оператор 'return'");
 	}
 
 	V();
@@ -416,7 +421,7 @@ void TDiagram::B()			//break
 
 	if (type != TBreak)
 	{
-		scan->PrintError("Ожидался оператор 'break'", lex);
+		scan->PrintError("Ожидался оператор 'break'");
 	}
 }
 
@@ -424,136 +429,141 @@ void TDiagram::B()			//break
 
 void TDiagram::V()			//Выражение
 //               
-//           ----- == ----
-//        ---|           |---
-//        |  ----- != ----  |
-//       \|/     -----      |
-//--------.------| Z |---------->
-//               -----
+//                -----   ----- == ----
+//             ---| Z |---|           |---
+//             |  -----   ----- != ----  |
+//   -----    \|/                        |
+//---| Z |-----.------------------------------->
+//   -----            
 //
 {
 	LEX lex;
 	int type;
-	int uk1;
 
-	do
+	Z();
+
+	type = LookForward(1);
+
+	while (type == TEq || type == TNEq)
 	{
-		Z();
-		uk1 = scan->GetUK();
 		type = scan->Scanner(lex);
-	} while (type == TEq || type == TNEq);
-
-	scan->PutUK(uk1);
+		Z();
+		type = LookForward(1);
+	}
 }
 
 
 
 void TDiagram::Z()			//Сравнение
-//          
-//           ----- < -----   
-//           |           |
-//           ----- > -----   
-//           |           |
-//           ----- <= ----
-//        ---|           |---
-//        |  ----- >= ----  |
-//       \|/     -----      |
-//--------.------| Y |---------->
-//               -----
+//    
+//					      ----- < -----   
+//					      |           |
+//					      ----- > -----   
+//			              |           |
+//                -----   ----- <= ----
+//             ---| Y |---|           |---
+//             |  -----   ----- >= ----  |
+//   -----    \|/                        |
+//---| Y |-----.------------------------------->
+//   -----            
 //
 {
 	LEX lex;
 	int type;
-	int uk1;
 
-	do
+	Y();
+
+	type = LookForward(1);
+
+	while (type == TLT || type == TGT || type == TLE || type == TGE)
 	{
-		Y();
-		uk1 = scan->GetUK();
 		type = scan->Scanner(lex);
-	} while (type == TLT || type == TGT || type == TLE || type == TGE);
-
-	scan->PutUK(uk1);
+		Y();
+		type = LookForward(1);
+	}
 }
 
 
 
 void TDiagram::M()			//Множитель
-//          
-//           ----- * ----   
-//           |          |
-//           ----- / ----
-//        ---|          |---
-//        |  ----- % ----  |
-//       \|/     -----     |
-//--------.------| N |---------->
-//               -----
+// 
+//					      ----- * -----   
+//			              |           |
+//                -----   ----- / -----
+//             ---| N |---|           |---
+//             |  -----   ----- = -----  |
+//   -----    \|/                        |
+//---| N |-----.------------------------------->
+//   -----            
 //
 {
 	LEX lex;
 	int type;
-	int uk1;
 
-	do
+	N();
+
+	type = LookForward(1);
+
+	while (type == TMult || type == TDiv || type == TMod)
 	{
-		N();
-		uk1 = scan->GetUK();
 		type = scan->Scanner(lex);
-	} while (type == TMult || type == TDiv || type == TMod);
-
-	scan->PutUK(uk1);
+		N();
+		type = LookForward(1);
+	}
 }
 
 
 
 void TDiagram::Y()			//Сдвиг
-//          
-//           ----- << ----
-//        ---|           |---
-//        |  ----- >> ----  |
-//       \|/     -----      |
-//--------.------| L |---------->
-//               -----
+//               
+//                -----   ----- << ----
+//             ---| L |---|           |---
+//             |  -----   ----- >> ----  |
+//   -----    \|/                        |
+//---| L |-----.------------------------------->
+//   -----            
 //
 {
 	LEX lex;
 	int type;
-	int uk1;
 
-	do
+	L();
+
+	type = LookForward(1);
+
+	while (type == TLShift || type == TRShift)
 	{
-		L();
-		uk1 = scan->GetUK();
 		type = scan->Scanner(lex);
-	} while (type == TLShift || type == TRShift);
-
-	scan->PutUK(uk1);
+		L();
+		type = LookForward(1);
+	}
 }
 
 
 
 void TDiagram::L()			//Слагаемое
-//          
-//           ----- + ----
-//        ---|          |---
-//        |  ----- - ----  |
-//       \|/     -----     |
-//--------.------| M |---------->
-//               -----
+//               
+//                -----   ----- + ----
+//             ---| M |---|           |---
+//             |  -----   ----- - ----  |
+//   -----    \|/                        |
+//---| M |-----.------------------------------->
+//   -----            
 //
 {
 	LEX lex;
 	int type;
-	int uk1;
 
-	do
+	M();
+
+	type = LookForward(1);
+
+	while (type == TPlus || type == TMinus)
 	{
-		M();
-		uk1 = scan->GetUK();
 		type = scan->Scanner(lex);
-	} while (type == TPlus || type == TMinus);
-
-	scan->PutUK(uk1);
+		M();
+		type = LookForward(1);
+	}
 }
 
 
@@ -573,51 +583,56 @@ void TDiagram::N()			//Со знаком
 {
 	LEX lex;
 	int type;
-	int uk1, uk2;
 
-	uk1 = scan->GetUK();
-	type = scan->Scanner(lex);
+	type = LookForward(1);
 
-	if (type != TPlus && type != TMinus)
+	if (type == TPlus || type == TMinus)
 	{
-		scan->PutUK(uk1);
+		type = scan->Scanner(lex);
 	}
 
-	uk1 = scan->GetUK();
-	type = scan->Scanner(lex);
+	type = LookForward(1);
 
 	if (type == TLS)
 	{
+		type = scan->Scanner(lex);
+
 		V();
 
 		type = scan->Scanner(lex);
 
 		if (type != TRS)
 		{
-			scan->PrintError("Ожидался символ ')'", lex);
+			scan->PrintError("Ожидался символ ')'");
 		}
 	}
 	else if (type == TMain)
 	{
-		scan->PutUK(uk1);
 		K();
 	}
 	else if (type == TIdent)
 	{
-		uk2 = scan->GetUK();
-		type = scan->Scanner(lex);
+		type = LookForward(2);
 
 		if (type == TLS)
 		{
-			scan->PutUK(uk1);
 			K();
 		}
+		else
+		{
+			type = scan->Scanner(lex);
+		}
 
-		scan->PutUK(uk2);
 	}
-	else if (type != TConstInt && type != TConstFloat)
+	else
 	{
-		scan->PrintError("Ожидалось элементарное выражение", lex);
+		type = scan->Scanner(lex);
+
+		if (type != TConstInt && type != TConstFloat)
+		{
+			scan->PrintError("Ожидалось элементарное выражение");
+
+		}
 	}
 }
 
@@ -637,20 +652,20 @@ void TDiagram::K()			//Вызов функции
 
 	if (type != TMain && type != TIdent)
 	{
-		scan->PrintError("Ожидалось имя функции", lex);
+		scan->PrintError("Ожидалось имя функции");
 	}
 
 	type = scan->Scanner(lex);
 
 	if (type != TLS)
 	{
-		scan->PrintError("Ожидался символ '('", lex);
+		scan->PrintError("Ожидался символ '('");
 	}
 
 	type = scan->Scanner(lex);
 
 	if (type != TRS)
 	{
-		scan->PrintError("Ожидался символ ')'", lex);
+		scan->PrintError("Ожидался символ ')'");
 	}
 }

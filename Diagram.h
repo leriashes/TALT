@@ -6,6 +6,8 @@ class TDiagram
 private:
 	TScanner* scan;
 
+	int LookForward(int k);
+
 	void D();		//описание данных
 	void F();		//функция
 	void Q();		//составной оператор

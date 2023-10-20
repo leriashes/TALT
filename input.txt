@@ -2,6 +2,6 @@ int main () {}
 
 float k() {}
 
-int d() {}
+int d() {a = 2 * k + (3 / z);}
 
 int f, y;
