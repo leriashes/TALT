@@ -30,6 +30,10 @@ int main()
     {
         scan->PrintError("Лишний текст в конце программы", lex);
     }
+    else
+    {
+        printf("Ошибки не найдены.\n");
+    }
 
     return 0;
 }

@@ -1,16 +1,14 @@
-short flot = -3 * (a - k / 2);
-int k;
+//short flot = -3 * (a - (k / 2));
+//int k;
 
-while (text[uk] >= '0' && text[uk] <= '9')
+int main() {
+while (text >= 0)
 	{
-		if (i < MAX_CONST + 2)
-			lex[i++] = text[uk++];
-		else
-			uk++;
+		a = 3 + 2;
+		lex = text;
+		uk = uk + 1;
 	}
 
-	if (i == MAX_CONST + 2)
-	{
-		PrintError("Слишком длинная константа", lex);
-		return TError;
-	}
+	PrintError();
+	return TError;
+}

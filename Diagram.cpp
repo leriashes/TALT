@@ -3,7 +3,7 @@
 void TDiagram::S()			//программа
 //               -----
 //            ---| D |---
-//		     |	 _____   |
+//		     |	 -----   |
 //        ---|           |---
 //        |  |   -----   |  |
 //        |   ---| F |---   |
@@ -31,12 +31,11 @@ void TDiagram::S()			//программа
 			}
 		}
 
-		//uk2 = scan->GetUK();
 		type = scan->Scanner(lex);
-		//scan->PutUK(uk2);
 
 		if (type == TMain)
 		{
+			scan->PutUK(uk1);
 			F();
 		}
 		else if (type == TIdent)
@@ -136,10 +135,29 @@ void TDiagram::F()			//функция
 {
 	LEX lex;
 	int type;
+	int uk1;
 
 	type = scan->Scanner(lex);
 
-	if (type != TMain || type != TIdent)
+	if (type != TLong && type != TShort && type != TInt && type != TFloat)
+	{
+		scan->PrintError("Ожидался тип", lex);
+	}
+
+	if (type == TLong || type == TShort)
+	{
+		uk1 = scan->GetUK();
+		type = scan->Scanner(lex);
+
+		if (type != TInt)
+		{
+			scan->PutUK(uk1);
+		}
+	}
+
+	type = scan->Scanner(lex);
+
+	if (type != TMain && type != TIdent)
 	{
 		scan->PrintError("Ожидалось имя функции", lex);
 	}
@@ -166,7 +184,7 @@ void TDiagram::F()			//функция
 void TDiagram::Q()			//Составной оператор
 //               -----
 //            ---| D |---
-//		     |	 _____   |
+//		     |	 -----   |
 //        ---|           |---
 //        |  |   -----   |  |
 //        |   ---| A |---   |
@@ -205,6 +223,8 @@ void TDiagram::Q()			//Составной оператор
 		scan->PutUK(uk1);
 	}
 
+	type = scan->Scanner(lex);
+
 	if (type != TFRS)
 	{
 		scan->PrintError("Ожидался символ '}'", lex);
@@ -216,7 +236,7 @@ void TDiagram::Q()			//Составной оператор
 void TDiagram::A()			//оператор
 //               -----
 //        -------| Q |------------
-//		  |	     _____           |
+//		  |	     -----           |
 //        |      -----           |
 //        |------| W |-----------|
 //        |      -----           |
@@ -241,28 +261,32 @@ void TDiagram::A()			//оператор
 
 	uk1 = scan->GetUK();
 	type = scan->Scanner(lex);
-	scan->PutUK(uk1);
 
 	if (type == TFLS)
 	{
+		scan->PutUK(uk1);
 		Q();
 	}
 	else if (type == TWhile)
 	{
+		scan->PutUK(uk1);
 		W();
 	}
 	else
 	{
 		if (type == TReturn)
 		{
+			scan->PutUK(uk1);
 			R();
 		}
 		else if (type == TBreak)
 		{
+			scan->PutUK(uk1);
 			B();
 		}
 		else if (type == TMain)
 		{
+			scan->PutUK(uk1);
 			K();
 		}
 		else if (type == TIdent)
@@ -348,7 +372,7 @@ void TDiagram::P()			//Присваивание
 
 	type = scan->Scanner(lex);
 
-	if (type != TLS)
+	if (type != TSave)
 	{
 		scan->PrintError("Ожидался знак =", lex);
 	}
@@ -549,7 +573,7 @@ void TDiagram::N()			//Со знаком
 {
 	LEX lex;
 	int type;
-	int uk1;
+	int uk1, uk2;
 
 	uk1 = scan->GetUK();
 	type = scan->Scanner(lex);
@@ -580,6 +604,7 @@ void TDiagram::N()			//Со знаком
 	}
 	else if (type == TIdent)
 	{
+		uk2 = scan->GetUK();
 		type = scan->Scanner(lex);
 
 		if (type == TLS)
@@ -587,6 +612,8 @@ void TDiagram::N()			//Со знаком
 			scan->PutUK(uk1);
 			K();
 		}
+
+		scan->PutUK(uk2);
 	}
 	else if (type != TConstInt && type != TConstFloat)
 	{
@@ -608,7 +635,7 @@ void TDiagram::K()			//Вызов функции
 
 	type = scan->Scanner(lex);
 
-	if (type != TMain || type != TIdent)
+	if (type != TMain && type != TIdent)
 	{
 		scan->PrintError("Ожидалось имя функции", lex);
 	}
