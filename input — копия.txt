@@ -1,0 +1,16 @@
+//short flot = -3 * (a - (k / 2));
+//int k;
+
+int main() {
+while (text >= 0)
+	{
+		a = 3 + 2;
+		lex = text;
+		uk = uk + 1;
+	}
+
+	PrintError();
+	return TError;
+}
+
+short int pu() {}

@@ -1,14 +1,7 @@
-//short flot = -3 * (a - (k / 2));
-//int k;
+int main () {}
 
-int main() {
-while (text >= 0)
-	{
-		a = 3 + 2;
-		lex = text;
-		uk = uk + 1;
-	}
+float k() {}
 
-	PrintError();
-	return TError;
-}
+int d() {}
+
+int f, y;

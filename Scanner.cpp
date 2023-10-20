@@ -36,7 +36,7 @@ void TScanner::PrintError(const char* error, char* a)
 		printf("--- Ошибка: %s. \'%s\' ---  \n", error, a);
 	}
 
-	//exit(0);
+	exit(0);
 }
 
 //выдать сообщение об ошибке
@@ -44,7 +44,7 @@ void TScanner::PrintError(const char* error)
 {
 	printf("--- Ошибка: %s. ---   \n", error);
 
-	//exit(0);
+	exit(0);
 }
 
 int TScanner::Scanner(LEX lex)
