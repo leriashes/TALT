@@ -98,7 +98,6 @@ void TDiagram::D()			//Описание данных
 {
 	LEX lex;
 	int type;
-	int k = 2;
 
 	type = scan->Scanner(lex);
 
