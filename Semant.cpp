@@ -8,6 +8,7 @@ Tree::Tree(TScanner* scan)
 
 	node = new Node();
 	node->objType = Empty;
+	node->dataType = NO_TYPE;
 
 	parent = NULL;
 	left = NULL;
@@ -57,7 +58,7 @@ Tree* Tree::FindUpOneLevel(Tree* from, LEX id)
 {
 	Tree* i = from;		//текущая вершина поиска
 
-	while ((i != NULL) && (i->parent != NULL) && (i->parent->right != i))
+	while ((i != NULL) && (i->parent == NULL || i->parent->right != i))
 	{
 		if (memcmp(id, i->node->id, max(strlen(i->node->id), strlen(id))) == 0)
 			return i;	//найден совпадающий идентификатор
@@ -158,6 +159,23 @@ Tree* Tree::SemGetVar(LEX a)
 
 	if (v->node->objType == ObjFunct)
 		scan->PrintError("Неверное использование имени функции", a);
+
+	return v;
+}
+
+Tree* Tree::SemNewLevel()
+{
+	Tree* v = cur;
+	Node n;
+
+	memcpy(&n.id, &"", 2);
+	n.objType = Empty;
+
+	cur->SetLeft(&n);
+	cur = cur->left;
+
+	cur->SetRight(&n);
+	cur = cur->right;
 
 	return v;
 }

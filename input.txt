@@ -1,18 +1,13 @@
-int main()
+float im;
+int a;
+short fun ()
 {
-    short k = 1;
-
-    while (k == 1)
-    {
-        t = t << 2;
-        i = t >> 4;
-        p = t + i;
-    }
-
-    return 3;
+	int i;
 }
 
-
-long int k, g, h = 1 - 5;
-long go = 3 - 2;
-
+int main ()
+{
+	long n;
+	{float a, b;}
+	{int a, c;}
+}

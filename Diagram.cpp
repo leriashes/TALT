@@ -235,6 +235,8 @@ void TDiagram::Q()			//Составной оператор
 		scan->PrintError("Ожидался символ '{'");
 	}
 
+	Tree* v = root->SemNewLevel();
+
 	type = LookForward(1);
 
 	while (type == TShort || type == TLong || type == TInt || type == TFloat || type == TFLS || type == TWhile || type == TIdent || type == TReturn || type == TBreak || type == TSemicolon || type == TMain)
@@ -258,6 +260,8 @@ void TDiagram::Q()			//Составной оператор
 	{
 		scan->PrintError("Ожидался символ '}'");
 	}
+
+	root->SetCur(v);
 }
 
 

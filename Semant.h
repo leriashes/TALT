@@ -2,11 +2,11 @@
 #include "defs.h"
 #include "Scanner.h"
 
-enum OBJ_TYPE {Empty = 1,
+enum OBJ_TYPE {Empty = 0,
 				ObjVar,		//простая переменная
 				ObjFunct};	//функция
 
-enum DATA_TYPE {TYPE_INT = 1, TYPE_SHORT, TYPE_FLOAT};
+enum DATA_TYPE {NO_TYPE = 0, TYPE_INT, TYPE_SHORT, TYPE_FLOAT};
 
 struct Node
 {
@@ -42,6 +42,7 @@ public:
 	void SetCur(Tree* a);			//установить текущий узел дерева
 	Tree* GetCur();					//получить ссылку на текущий узел дерева
 	Tree* SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t);		//занесение идентификатора a в таблицу с типом t
+	Tree* SemNewLevel();			//новый уровень (для составного оператора)
 	Tree* SemGetVar(LEX a);		//найти в таблице переменную с именем a и вернуть ссылку на соответсвующий элемент дерева
 	Tree* SemGetFunct(LEX a);		//найти в таблице переменную с именем a и вернуть ссылку на соответсвующий элемент дерева
 	int DupControl(Tree* addr, LEX a);			//проверка идентификатора a на повторное описание внутри блока
