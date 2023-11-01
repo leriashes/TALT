@@ -49,6 +49,16 @@ Tree* Tree::FindUp(Tree* from, LEX id)
 	return i;
 }
 
+Tree* Tree::FindRoot()
+{
+	Tree* i = cur;
+
+	while ((i != NULL) && (i->parent != NULL))
+		i = i->parent;
+
+	return i;
+}
+
 Tree* Tree::FindUp(LEX id)
 {
 	return FindUp(this, id);
@@ -100,7 +110,11 @@ void Tree::Print()
 
 	if (right != NULL)
 	{
-		printf("\n");
+		printf("\n\nРОДИТЕЛЬ: ");
+		if (node->objType != Empty)
+			printf("Вершина %s\n", node->id);
+		else
+			printf("Вершина ПУСТАЯ\n");
 		right->Print();
 	}
 		
@@ -119,7 +133,11 @@ Tree* Tree::GetCur()
 Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
 {
 	if (DupControl(cur, a))
+	{
+		Tree* root = FindRoot();
+		root->Print();
 		scan->PrintError("Повторное описание идентификатора", a);
+	}
 
 	Tree* v;
 	Node n;
@@ -155,10 +173,18 @@ Tree* Tree::SemGetVar(LEX a)
 	Tree* v = FindUp(cur, a);
 
 	if (v == NULL)
+	{
+		Tree* root = FindRoot();
+		root->Print();
 		scan->PrintError("Отсутствует описание идентификатора", a);
+	}
 
 	if (v->node->objType == ObjFunct)
+	{
+		Tree* root = FindRoot();
+		root->Print();
 		scan->PrintError("Неверное использование имени функции", a);
+	}
 
 	return v;
 }
@@ -185,10 +211,18 @@ Tree* Tree::SemGetFunct(LEX a)
 	Tree* v = FindUp(cur, a);
 
 	if (v == NULL)
+	{
+		Tree* root = FindRoot();
+		root->Print();
 		scan->PrintError("Отсутствует описание функции", a);
+	}
 
 	if (v->node->objType != ObjFunct)
+	{
+		Tree* root = FindRoot();
+		root->Print();
 		scan->PrintError("Идентификатор не является именем функции", a);
+	}
 
 	return v;
 }

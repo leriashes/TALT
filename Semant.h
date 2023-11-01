@@ -32,6 +32,7 @@ public:
 	void SetLeft(Node* data);
 	void SetRight(Node* data);
 
+	Tree* FindRoot();
 	Tree* FindUp(Tree* from, LEX id);
 	Tree* FindUp(LEX id);
 	Tree* FindUpOneLevel(Tree* from, LEX id);
