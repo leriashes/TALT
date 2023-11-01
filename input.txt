@@ -14,5 +14,5 @@ int main()
 
 
 long int k, g, h = 1 - 5;
-long short g = 3 - 2;
+long go = 3 - 2;
 

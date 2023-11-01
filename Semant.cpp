@@ -114,7 +114,7 @@ Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
 	cur->SetLeft(&n);
 	cur = cur->left;
 
-	if (t == ObjFunct)
+	if (ot == ObjFunct)
 	{
 		v = cur;
 		memcpy(&n.id, &"", 2);

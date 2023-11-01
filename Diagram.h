@@ -30,6 +30,8 @@ public:
 	TDiagram(TScanner* s) { scan = s; root = new Tree(scan); }
 	~TDiagram() {}
 
+	void PrintTree();
+
 	void S();		//ןנמדנאללא
 };
 

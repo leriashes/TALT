@@ -29,5 +29,8 @@ int main()
         printf("Ошибки не найдены.\n");
     }
 
+    printf("\n\n\nСЕМАНТИЧЕСКОЕ ДЕРЕВО\n\n");
+    diag->PrintTree();
+
     return 0;
 }

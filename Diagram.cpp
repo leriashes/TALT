@@ -23,6 +23,11 @@ int TDiagram::LookForward(int k)
 
 
 
+void TDiagram::PrintTree()
+{
+	root->Print();
+}
+
 void TDiagram::S()			//Программа
 //               -----
 //            ---| D |---
@@ -167,6 +172,8 @@ void TDiagram::F()			//Функция
 		scan->PrintError("Ожидался тип");
 	}
 
+	DATA_TYPE semType = root->GetType(type);
+
 	if (type == TLong || type == TShort)
 	{
 		type = LookForward(1);
@@ -184,6 +191,8 @@ void TDiagram::F()			//Функция
 		scan->PrintError("Ожидалось имя функции");
 	}
 
+	Tree* v = root->SemInclude(lex, ObjFunct, semType);
+
 	type = scan->Scanner(lex);
 
 	if (type != TLS)
@@ -199,6 +208,8 @@ void TDiagram::F()			//Функция
 	}
 
 	Q();
+
+	root->SetCur(v);
 }
 
 
