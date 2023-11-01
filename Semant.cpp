@@ -1,10 +1,20 @@
 #include "Semant.h"
-
+Tree* Tree::cur = (Tree*)NULL;
+TScanner* Tree::scan = (TScanner*)NULL;
 
 Tree::Tree(TScanner* scan)
 {
-	cur = NULL;
 	this->scan = scan;
+
+	node = new Node();
+
+	parent = NULL;
+	left = NULL;
+	right = NULL;
+
+	memcpy(node, &("------"), sizeof(Node));
+
+	cur = this;
 }
 
 Tree::Tree(Tree* p, Tree* l, Tree* r, Node* data)
@@ -18,26 +28,16 @@ Tree::Tree(Tree* p, Tree* l, Tree* r, Node* data)
 	memcpy(node, data, sizeof(Node));
 }
 
-Tree::Tree()
-{
-	node = new Node();
-
-	parent = NULL;
-	left = NULL;
-	right = NULL;
-
-	memcpy(node, &("------"), sizeof(Node));
-}
-
 void Tree::SetLeft(Node* data)
 {
-	Tree* a = new Tree(NULL, NULL, this, data);
+	Tree* a = new Tree(this, NULL, NULL, data);
+
 	left = a;
 }
 
 void Tree::SetRight(Node* data)
 {
-	Tree* a = new Tree(NULL, NULL, this, data);
+	Tree* a = new Tree(this, NULL, NULL, data);
 	right = a;
 }
 
@@ -60,7 +60,7 @@ Tree* Tree::FindUpOneLevel(Tree* from, LEX id)
 {
 	Tree* i = from;		//текущая вершина поиска
 
-	while ((i != NULL) && (i->parent->right != i))
+	while ((i != NULL) && (i->parent != NULL) && (i->parent->right != i))
 	{
 		if (memcmp(id, i->node->id, max(strlen(i->node->id), strlen(id))) == 0)
 			return i;	//найден совпадающий идентификатор
@@ -158,6 +158,17 @@ int Tree::DupControl(Tree* addr, LEX a)
 {
 	if (FindUpOneLevel(addr, a) == NULL) return 0;
 	return 1;
+}
+
+DATA_TYPE Tree::GetType(int lexType)
+{
+	if (lexType == TShort)
+		return TYPE_SHORT;
+
+	if (lexType == TFloat)
+		return TYPE_FLOAT;
+
+	return TYPE_INT;
 }
 
 

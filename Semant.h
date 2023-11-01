@@ -18,16 +18,14 @@ struct Node
 class Tree			//элемент семантической таблицы
 {
 private:
-	static TScanner* scan;
-
 	Node* node;		//информация об объекте таблицы
 	Tree* parent, * left, * right;		//родитель, левый и правый потомки
 
 public:
+	static TScanner* scan;
 	static Tree* cur;		//текущий элемент дерева
 
 	Tree(Tree* p, Tree* l, Tree* r, Node* data);
-	Tree();
 	Tree(TScanner* scan);
 
 	//Функции обработки бинарного дерева
@@ -47,5 +45,7 @@ public:
 	Tree* SemGetVar(LEX a);		//найти в таблице переменную с именем a и вернуть ссылку на соответсвующий элемент дерева
 	Tree* SemGetFunct(LEX a);		//найти в таблице переменную с именем a и вернуть ссылку на соответсвующий элемент дерева
 	int DupControl(Tree* addr, LEX a);			//проверка идентификатора a на повторное описание внутри блока
+
+	DATA_TYPE GetType(int lexType);
 };
 

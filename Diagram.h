@@ -1,10 +1,12 @@
 #pragma once
 #include "Scanner.h"
+#include "Semant.h"
 
 class TDiagram
 {
 private:
 	TScanner* scan;
+	Tree* root;
 
 	int LookForward(int k);
 
@@ -25,7 +27,7 @@ private:
 	void K();		//вызов функции
 
 public:
-	TDiagram(TScanner* s) { scan = s; }
+	TDiagram(TScanner* s) { scan = s; root = new Tree(scan); }
 	~TDiagram() {}
 
 	void S();		//программа

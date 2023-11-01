@@ -106,6 +106,8 @@ void TDiagram::D()			//Описание данных
 		scan->PrintError("Ожидался тип");
 	}
 
+	DATA_TYPE semType = root->GetType(type);
+
 	if (type == TLong || type == TShort)
 	{
 		type = LookForward(1);
@@ -116,7 +118,6 @@ void TDiagram::D()			//Описание данных
 		}
 	}
 
-
 	do
 	{
 		type = scan->Scanner(lex);
@@ -125,6 +126,8 @@ void TDiagram::D()			//Описание данных
 		{
 			scan->PrintError("Ожидался идентификатор");
 		}
+
+		Tree* v = root->SemInclude(lex, ObjVar, semType);
 
 		type = scan->Scanner(lex);
 
