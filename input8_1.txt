@@ -1,0 +1,18 @@
+int main()
+{
+    short k = 1;
+
+    while (k == 1)
+    {
+        t = t << 2;
+        i = t >> 4;
+        p = t + i;
+    }
+
+    return 3;
+}
+
+
+long int k, g, h = 1 - 5;
+long go = 3 - 2;
+

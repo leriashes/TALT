@@ -7,12 +7,12 @@ Tree::Tree(TScanner* scan)
 	this->scan = scan;
 
 	node = new Node();
+	node->objType = Empty;
 
 	parent = NULL;
 	left = NULL;
 	right = NULL;
 
-	memcpy(node, &("------"), sizeof(Node));
 
 	cur = this;
 }
@@ -30,15 +30,12 @@ Tree::Tree(Tree* p, Tree* l, Tree* r, Node* data)
 
 void Tree::SetLeft(Node* data)
 {
-	Tree* a = new Tree(this, NULL, NULL, data);
-
-	left = a;
+	left = new Tree(this, NULL, NULL, data);
 }
 
 void Tree::SetRight(Node* data)
 {
-	Tree* a = new Tree(this, NULL, NULL, data);
-	right = a;
+	right = new Tree(this, NULL, NULL, data);
 }
 
 Tree* Tree::FindUp(Tree* from, LEX id)
@@ -73,20 +70,39 @@ Tree* Tree::FindUpOneLevel(Tree* from, LEX id)
 
 void Tree::Print()
 {
-	printf("Вершина с данными %s ------>", node->id);
+	if (node->objType != Empty)
+		printf("Вершина с данными %s ------>", node->id);
+	else
+		printf("Вершина ПУСТАЯ ------>");
 
 	if (left != NULL)
-		printf("      слева данные %s", left->node->id);
+	{
+		if (left->node->objType != Empty)
+			printf("      слева данные %s", left->node->id);
+		else
+			printf("      слева ПУСТАЯ вершина");
+	}
+		
 
 	if (right != NULL)
-		printf("      справа данные %s", right->node->id);
+	{
+		if (right->node->objType != Empty)
+			printf("      справа данные %s", right->node->id);
+		else
+			printf("      справа ПУСТАЯ вершина");
+	}
+
 	printf("\n");
 
 	if (left != NULL)
 		left->Print();
 
 	if (right != NULL)
+	{
+		printf("\n");
 		right->Print();
+	}
+		
 }
 
 void Tree::SetCur(Tree* a)
@@ -111,8 +127,13 @@ Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
 	n.objType = ot;
 	n.dataType = t;
 	
-	cur->SetLeft(&n);
-	cur = cur->left;
+	if (this->node->objType == Empty && this->parent == NULL && this->left == NULL && this->right == NULL)
+		memcpy(node, &n, sizeof(Node));
+	else
+	{
+		cur->SetLeft(&n);
+		cur = cur->left;
+	}
 
 	if (ot == ObjFunct)
 	{
