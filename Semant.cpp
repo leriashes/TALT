@@ -191,7 +191,6 @@ Tree* Tree::SemGetVar(LEX a)
 
 Tree* Tree::SemNewLevel()
 {
-	Tree* v = cur;
 	Node n;
 
 	memcpy(&n.id, &"", 2);
@@ -199,6 +198,7 @@ Tree* Tree::SemNewLevel()
 
 	cur->SetLeft(&n);
 	cur = cur->left;
+	Tree* v = cur;
 
 	cur->SetRight(&n);
 	cur = cur->right;
