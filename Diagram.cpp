@@ -111,7 +111,7 @@ void TDiagram::D()			//Описание данных
 		scan->PrintError("Ожидался тип");
 	}
 
-	DATA_TYPE semType = root->GetType(type);
+	DATA_TYPE semType = root->GetTypebyLex(type);
 
 	if (type == TLong || type == TShort)
 	{
@@ -138,7 +138,11 @@ void TDiagram::D()			//Описание данных
 
 		if (type == TSave)
 		{
-			V();
+			DATA_TYPE* valType = nullptr;
+			V(valType);
+
+			root->TypeCastingAssign(semType, *valType);
+
 			type = scan->Scanner(lex);
 		}
 
@@ -172,7 +176,7 @@ void TDiagram::F()			//Функция
 		scan->PrintError("Ожидался тип");
 	}
 
-	DATA_TYPE semType = root->GetType(type);
+	DATA_TYPE semType = root->GetTypebyLex(type);
 
 	if (type == TLong || type == TShort)
 	{
@@ -291,6 +295,8 @@ void TDiagram::A()			//Оператор
 	LEX lex;
 	int type;
 
+	DATA_TYPE* resType = nullptr;
+
 	type = LookForward(1);
 
 	if (type == TFLS)
@@ -313,7 +319,7 @@ void TDiagram::A()			//Оператор
 		}
 		else if (type == TMain)
 		{
-			K();
+			K(resType);
 		}
 		else if (type == TIdent)
 		{
@@ -325,7 +331,7 @@ void TDiagram::A()			//Оператор
 			}
 			else
 			{
-				K();
+				K(resType);
 			}
 		}
 
@@ -364,7 +370,8 @@ void TDiagram::W()			//while
 		scan->PrintError("Ожидался символ '('");
 	}
 
-	V();
+	DATA_TYPE* valType = new DATA_TYPE();
+	V(valType);
 
 	type = scan->Scanner(lex);
 
@@ -395,6 +402,8 @@ void TDiagram::P()			//Присваивание
 		scan->PrintError("Ожидался идентификатор");
 	}
 
+	Tree* ident = root->SemGetVar(lex);
+
 	type = scan->Scanner(lex);
 
 	if (type != TSave)
@@ -402,7 +411,10 @@ void TDiagram::P()			//Присваивание
 		scan->PrintError("Ожидался знак =");
 	}
 
-	V();
+	DATA_TYPE* valType = nullptr;
+	V(valType);
+
+	root->TypeCastingAssign(ident->GetType(), *valType);
 }
 
 
@@ -424,7 +436,10 @@ void TDiagram::R()			//return
 		scan->PrintError("Ожидался оператор 'return'");
 	}
 
-	V();
+	DATA_TYPE* valType = new DATA_TYPE();
+	V(valType);
+
+	root->TypeCastingAssign(root->GetCur()->GetCurrentFunct()->GetType(), *valType);
 }
 
 
@@ -447,7 +462,7 @@ void TDiagram::B()			//break
 
 
 
-void TDiagram::V()			//Выражение
+void TDiagram::V(DATA_TYPE* resType)			//Выражение
 //               
 //                -----   ----- == ----
 //             ---| Z |---|           |---
@@ -460,21 +475,26 @@ void TDiagram::V()			//Выражение
 	LEX lex;
 	int type;
 
-	Z();
+	DATA_TYPE * secondType = new DATA_TYPE();
+
+	Z(resType);
 
 	type = LookForward(1);
 
 	while (type == TEq || type == TNEq)
 	{
 		type = scan->Scanner(lex);
-		Z();
+		Z(secondType);
 		type = LookForward(1);
+
+		root->TypeCasting(*resType, *secondType);
+		*resType = TYPE_INT;
 	}
 }
 
 
 
-void TDiagram::Z()			//Сравнение
+void TDiagram::Z(DATA_TYPE* resType)			//Сравнение
 //    
 //					      ----- < -----   
 //					      |           |
@@ -491,27 +511,32 @@ void TDiagram::Z()			//Сравнение
 	LEX lex;
 	int type;
 
-	Y();
+	DATA_TYPE* secondType = new DATA_TYPE();
+
+	Y(resType);
 
 	type = LookForward(1);
 
 	while (type == TLT || type == TGT || type == TLE || type == TGE)
 	{
 		type = scan->Scanner(lex);
-		Y();
+		Y(secondType);
 		type = LookForward(1);
+
+		root->TypeCasting(*resType, *secondType);
+		*resType = TYPE_INT;
 	}
 }
 
 
 
-void TDiagram::M()			//Множитель
+void TDiagram::M(DATA_TYPE* resType)			//Множитель
 // 
 //					      ----- * -----   
 //			              |           |
 //                -----   ----- / -----
 //             ---| N |---|           |---
-//             |  -----   ----- = -----  |
+//             |  -----   ----- % -----  |
 //   -----    \|/                        |
 //---| N |-----.------------------------------->
 //   -----            
@@ -520,21 +545,30 @@ void TDiagram::M()			//Множитель
 	LEX lex;
 	int type;
 
-	N();
+	DATA_TYPE* secondType = new DATA_TYPE();
+
+	N(resType);
 
 	type = LookForward(1);
 
 	while (type == TMult || type == TDiv || type == TMod)
 	{
 		type = scan->Scanner(lex);
-		N();
+		N(secondType);
 		type = LookForward(1);
+
+		if (type == TMod)
+		{
+			;
+		}
+
+		*resType = root->TypeCasting(*resType, *secondType);
 	}
 }
 
 
 
-void TDiagram::Y()			//Сдвиг
+void TDiagram::Y(DATA_TYPE* resType)			//Сдвиг
 //               
 //                -----   ----- << ----
 //             ---| L |---|           |---
@@ -547,25 +581,29 @@ void TDiagram::Y()			//Сдвиг
 	LEX lex;
 	int type;
 
-	L();
+	DATA_TYPE* secondType = new DATA_TYPE();
+
+	L(resType);
 
 	type = LookForward(1);
 
 	while (type == TLShift || type == TRShift)
 	{
 		type = scan->Scanner(lex);
-		L();
+		L(secondType);
 		type = LookForward(1);
+
+		*resType = TYPE_INT;
 	}
 }
 
 
 
-void TDiagram::L()			//Слагаемое
+void TDiagram::L(DATA_TYPE* resType)			//Слагаемое
 //               
 //                -----   ----- + ----
 //             ---| M |---|           |---
-//             |  -----   ----- - ----  |
+//             |  -----   ----- - ----   |
 //   -----    \|/                        |
 //---| M |-----.------------------------------->
 //   -----            
@@ -574,21 +612,25 @@ void TDiagram::L()			//Слагаемое
 	LEX lex;
 	int type;
 
-	M();
+	DATA_TYPE* secondType = new DATA_TYPE();
+
+	M(resType);
 
 	type = LookForward(1);
 
 	while (type == TPlus || type == TMinus)
 	{
 		type = scan->Scanner(lex);
-		M();
+		M(secondType);
 		type = LookForward(1);
+
+		*resType = root->TypeCasting(*resType, *secondType);
 	}
 }
 
 
 
-void TDiagram::N()			//Со знаком
+void TDiagram::N(DATA_TYPE* resType)			//Со знаком
 //					 --- a -----------------
 //                   |                     |
 //		--- + ---    |-- c1 ---------------|            
@@ -617,7 +659,7 @@ void TDiagram::N()			//Со знаком
 	{
 		type = scan->Scanner(lex);
 
-		V();
+		V(resType);
 
 		type = scan->Scanner(lex);
 
@@ -628,7 +670,7 @@ void TDiagram::N()			//Со знаком
 	}
 	else if (type == TMain)
 	{
-		K();
+		K(resType);
 	}
 	else if (type == TIdent)
 	{
@@ -636,11 +678,12 @@ void TDiagram::N()			//Со знаком
 
 		if (type == TLS)
 		{
-			K();
+			K(resType);
 		}
 		else
 		{
 			type = scan->Scanner(lex);
+			*resType = root->SemGetVar(lex)->GetType();
 		}
 
 	}
@@ -648,17 +691,24 @@ void TDiagram::N()			//Со знаком
 	{
 		type = scan->Scanner(lex);
 
-		if (type != TConstInt && type != TConstFloat)
+		if (type == TConstInt)
+		{
+			*resType = TYPE_INT;
+		}
+		else if (type == TConstFloat)
+		{
+			*resType = TYPE_FLOAT;
+		}
+		else
 		{
 			scan->PrintError("Ожидалось выражение");
-
 		}
 	}
 }
 
 
 
-void TDiagram::K()			//Вызов функции
+void TDiagram::K(DATA_TYPE* resType)			//Вызов функции
 // 
 //		----- a -----                
 // -----|			|--- ( --- ) ----->
@@ -674,6 +724,8 @@ void TDiagram::K()			//Вызов функции
 	{
 		scan->PrintError("Ожидалось имя функции");
 	}
+
+	Tree* funct = root->SemGetFunct(lex);
 
 	type = scan->Scanner(lex);
 

@@ -3,11 +3,21 @@ int a;
 short fun ()
 {
 	int i;
+	return 3;
 }
 
 int main ()
 {
 	long n;
 	{float a, b;}
-	{int a, c;}
+
+	while (n < 0)
+	{
+		float i;
+
+		{short ik;
+		return i;}
+	}
+	return a;
 }
+

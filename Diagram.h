@@ -18,13 +18,13 @@ private:
 	void P();		//присваивание
 	void R();		//return
 	void B();		//break
-	void V();		//выражение
-	void Z();		//сравнение
-	void M();		//множитель
-	void Y();		//сдвиг
-	void L();		//слагаемое
-	void N();		//со знаком
-	void K();		//вызов функции
+	void V(DATA_TYPE* resType);		//выражение
+	void Z(DATA_TYPE* resType);		//сравнение
+	void M(DATA_TYPE* resType);		//множитель
+	void Y(DATA_TYPE* resType);		//сдвиг
+	void L(DATA_TYPE* resType);		//слагаемое
+	void N(DATA_TYPE* resType);		//со знаком
+	void K(DATA_TYPE* resType);		//вызов функции
 
 public:
 	TDiagram(TScanner* s) { scan = s; root = new Tree(scan); }

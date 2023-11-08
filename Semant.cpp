@@ -125,6 +125,17 @@ void Tree::SetCur(Tree* a)
 	cur = a;
 }
 
+Tree* Tree::GetCurrentFunct()
+{
+	if (parent == NULL)
+		return NULL;
+		
+	if (node->objType == Empty && parent->node->objType == ObjFunct && parent->right == this)
+		return parent;
+
+	return parent->GetCurrentFunct();
+}
+
 Tree* Tree::GetCur()
 {
 	return cur;
@@ -233,7 +244,24 @@ int Tree::DupControl(Tree* addr, LEX a)
 	return 1;
 }
 
-DATA_TYPE Tree::GetType(int lexType)
+DATA_TYPE Tree::GetType()
+{
+	return node->dataType;
+}
+
+DATA_TYPE Tree::TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType)
+{
+	printf("\nПриведение типа %s к типу %s --> %s ------ строка %d\n", DT_Name[secondType], DT_Name[firstType], DT_Name[firstType], scan->GetLine());
+
+	return firstType;
+}
+
+void Tree::TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType)
+{
+	printf("\nПриведение типа %s к типу %s (присваивание) --> %s ------ строка %d\n", DT_Name[secondType], DT_Name[firstType], DT_Name[firstType], scan->GetLine());
+}
+
+DATA_TYPE Tree::GetTypebyLex(int lexType)
 {
 	if (lexType == TShort)
 		return TYPE_SHORT;

@@ -17,6 +17,8 @@ struct Node
 
 class Tree			//элемент семантической таблицы
 {
+	LEX DT_Name[4] = { "неопр.", "int", "short", "float" };
+
 private:
 	Node* node;		//информация об объекте таблицы
 	Tree* parent, * left, * right;		//родитель, левый и правый потомки
@@ -37,6 +39,8 @@ public:
 	Tree* FindUp(LEX id);
 	Tree* FindUpOneLevel(Tree* from, LEX id);
 
+	Tree* GetCurrentFunct();
+
 	void Print();
 
 	//Семантичексие подпрограммы
@@ -48,6 +52,10 @@ public:
 	Tree* SemGetFunct(LEX a);		//найти в таблице функцию с именем a и вернуть ссылку на соответсвующий элемент дерева
 	int DupControl(Tree* addr, LEX a);			//проверка идентификатора a на повторное описание внутри блока
 
-	DATA_TYPE GetType(int lexType);
+	DATA_TYPE TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType);
+	void TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType);
+
+	DATA_TYPE GetType();
+	DATA_TYPE GetTypebyLex(int lexType);
 };
 
