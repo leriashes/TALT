@@ -298,4 +298,12 @@ DATA_TYPE Tree::GetTypebyLex(int lexType)
 	return TYPE_INT;
 }
 
+void Tree::CheckTypeInt(DATA_TYPE type)
+{
+	if (type != TYPE_INT && type != TYPE_SHORT)
+	{
+		scan->PrintError("¬ыражение должно относитс€ к целочисленному типу");
+	}
+}
+
 

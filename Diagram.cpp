@@ -555,18 +555,24 @@ void TDiagram::M(DATA_TYPE* resType)			//Множитель
 
 	type = LookForward(1);
 
+	if (type == TMod)
+	{
+		root->CheckTypeInt(*resType);
+	}
+
 	while (type == TMult || type == TDiv || type == TMod)
 	{
 		int znak = type - 51;
 
 		type = scan->Scanner(lex);
 		N(&secondType);
-		type = LookForward(1);
 
 		if (type == TMod)
 		{
-			;
+			root->CheckTypeInt(secondType);
 		}
+
+		type = LookForward(1);
 
 		*resType = root->TypeCasting(*resType, secondType, OP_Name[znak]);
 	}
@@ -593,11 +599,19 @@ void TDiagram::Y(DATA_TYPE* resType)			//Сдвиг
 
 	type = LookForward(1);
 
+	if (type == TLShift || type == TRShift)
+	{
+		root->CheckTypeInt(*resType);
+	}
+
 	while (type == TLShift || type == TRShift)
 	{
 
 		type = scan->Scanner(lex);
 		L(&secondType);
+
+		root->CheckTypeInt(secondType);
+
 		type = LookForward(1);
 
 		*resType = TYPE_INT;

@@ -54,6 +54,7 @@ public:
 
 	DATA_TYPE TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX operation);
 	void TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType);
+	void CheckTypeInt(DATA_TYPE type);
 
 	DATA_TYPE GetType();
 	DATA_TYPE GetTypebyLex(int lexType);
