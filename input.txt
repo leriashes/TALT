@@ -3,13 +3,13 @@ int a;
 short fun ()
 {
 	int i;
-	i = 15 / 2 + im * fun - a + 31.5;
+	i = 15 / 2 + im * i - a + 31.5;
 	return im;
 }
 
 int main ()
 {
-	long n;
+	long n = a + im;
 	{float a, b;}
 
 	while (n < 0)

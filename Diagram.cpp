@@ -138,10 +138,10 @@ void TDiagram::D()			//Описание данных
 
 		if (type == TSave)
 		{
-			DATA_TYPE* valType = nullptr;
-			V(valType);
+			DATA_TYPE valType;
+			V(&valType);
 
-			root->TypeCastingAssign(semType, *valType);
+			root->TypeCastingAssign(semType, valType);
 
 			type = scan->Scanner(lex);
 		}
@@ -295,7 +295,7 @@ void TDiagram::A()			//Оператор
 	LEX lex;
 	int type;
 
-	DATA_TYPE* resType = nullptr;
+	DATA_TYPE resType;
 
 	type = LookForward(1);
 
@@ -319,7 +319,7 @@ void TDiagram::A()			//Оператор
 		}
 		else if (type == TMain)
 		{
-			K(resType);
+			K(&resType);
 		}
 		else if (type == TIdent)
 		{
@@ -331,7 +331,7 @@ void TDiagram::A()			//Оператор
 			}
 			else
 			{
-				K(resType);
+				K(&resType);
 			}
 		}
 
@@ -370,8 +370,8 @@ void TDiagram::W()			//while
 		scan->PrintError("Ожидался символ '('");
 	}
 
-	DATA_TYPE* valType = new DATA_TYPE();
-	V(valType);
+	DATA_TYPE valType;
+	V(&valType);
 
 	type = scan->Scanner(lex);
 
@@ -411,10 +411,10 @@ void TDiagram::P()			//Присваивание
 		scan->PrintError("Ожидался знак =");
 	}
 
-	DATA_TYPE* valType = new DATA_TYPE();
-	V(valType);
+	DATA_TYPE valType;
+	V(&valType);
 
-	root->TypeCastingAssign(ident->GetType(), *valType);
+	root->TypeCastingAssign(ident->GetType(), valType);
 }
 
 
@@ -436,10 +436,10 @@ void TDiagram::R()			//return
 		scan->PrintError("Ожидался оператор 'return'");
 	}
 
-	DATA_TYPE* valType = new DATA_TYPE();
-	V(valType);
+	DATA_TYPE valType;
+	V(&valType);
 
-	root->TypeCastingAssign(root->GetCur()->GetCurrentFunct()->GetType(), *valType);
+	root->TypeCastingAssign(root->GetCur()->GetCurrentFunct()->GetType(), valType);
 }
 
 
@@ -475,7 +475,7 @@ void TDiagram::V(DATA_TYPE* resType)			//Выражение
 	LEX lex;
 	int type;
 
-	DATA_TYPE * secondType = new DATA_TYPE();
+	DATA_TYPE secondType;
 
 	Z(resType);
 
@@ -486,10 +486,10 @@ void TDiagram::V(DATA_TYPE* resType)			//Выражение
 		int znak = type - 51;
 
 		type = scan->Scanner(lex);
-		Z(secondType);
+		Z(&secondType);
 		type = LookForward(1);
 
-		root->TypeCasting(*resType, *secondType, OP_Name[znak]);
+		root->TypeCasting(*resType, secondType, OP_Name[znak]);
 		*resType = TYPE_INT;
 	}
 }
@@ -513,7 +513,7 @@ void TDiagram::Z(DATA_TYPE* resType)			//Сравнение
 	LEX lex;
 	int type;
 
-	DATA_TYPE* secondType = new DATA_TYPE();
+	DATA_TYPE secondType;
 
 	Y(resType);
 
@@ -524,10 +524,10 @@ void TDiagram::Z(DATA_TYPE* resType)			//Сравнение
 		int znak = type - 51;
 
 		type = scan->Scanner(lex);
-		Y(secondType);
+		Y(&secondType);
 		type = LookForward(1);
 
-		root->TypeCasting(*resType, *secondType, OP_Name[znak]);
+		root->TypeCasting(*resType, secondType, OP_Name[znak]);
 		*resType = TYPE_INT;
 	}
 }
@@ -549,7 +549,7 @@ void TDiagram::M(DATA_TYPE* resType)			//Множитель
 	LEX lex;
 	int type;
 
-	DATA_TYPE* secondType = new DATA_TYPE();
+	DATA_TYPE secondType;
 
 	N(resType);
 
@@ -560,7 +560,7 @@ void TDiagram::M(DATA_TYPE* resType)			//Множитель
 		int znak = type - 51;
 
 		type = scan->Scanner(lex);
-		N(secondType);
+		N(&secondType);
 		type = LookForward(1);
 
 		if (type == TMod)
@@ -568,7 +568,7 @@ void TDiagram::M(DATA_TYPE* resType)			//Множитель
 			;
 		}
 
-		*resType = root->TypeCasting(*resType, *secondType, OP_Name[znak]);
+		*resType = root->TypeCasting(*resType, secondType, OP_Name[znak]);
 	}
 }
 
@@ -587,7 +587,7 @@ void TDiagram::Y(DATA_TYPE* resType)			//Сдвиг
 	LEX lex;
 	int type;
 
-	DATA_TYPE* secondType = new DATA_TYPE();
+	DATA_TYPE secondType;
 
 	L(resType);
 
@@ -597,7 +597,7 @@ void TDiagram::Y(DATA_TYPE* resType)			//Сдвиг
 	{
 
 		type = scan->Scanner(lex);
-		L(secondType);
+		L(&secondType);
 		type = LookForward(1);
 
 		*resType = TYPE_INT;
@@ -619,7 +619,7 @@ void TDiagram::L(DATA_TYPE* resType)			//Слагаемое
 	LEX lex;
 	int type;
 
-	DATA_TYPE* secondType = new DATA_TYPE();
+	DATA_TYPE secondType;
 
 	M(resType);
 
@@ -630,10 +630,10 @@ void TDiagram::L(DATA_TYPE* resType)			//Слагаемое
 		int znak = type - 51;
 
 		type = scan->Scanner(lex);
-		M(secondType);
+		M(&secondType);
 		type = LookForward(1);
 
-		*resType = root->TypeCasting(*resType, *secondType, OP_Name[znak]);
+		*resType = root->TypeCasting(*resType, secondType, OP_Name[znak]);
 	}
 }
 
