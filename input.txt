@@ -3,7 +3,8 @@ int a;
 short fun ()
 {
 	int i;
-	return 3;
+	i = 15 / 2 + im * fun - a + 31.5;
+	return im;
 }
 
 int main ()

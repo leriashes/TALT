@@ -52,7 +52,7 @@ public:
 	Tree* SemGetFunct(LEX a);		//найти в таблице функцию с именем a и вернуть ссылку на соответсвующий элемент дерева
 	int DupControl(Tree* addr, LEX a);			//проверка идентификатора a на повторное описание внутри блока
 
-	DATA_TYPE TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType);
+	DATA_TYPE TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX operation);
 	void TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType);
 
 	DATA_TYPE GetType();

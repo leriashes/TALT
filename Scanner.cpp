@@ -57,11 +57,11 @@ void TScanner::PrintError(const char* error, char* a)
 {
     if (a[0] == '\0')
     {
-        printf("--- Ошибка: %s. ---   Строка: %d  Позиция: %d\n", error, line, pos);
+        printf("\n--- Ошибка: %s. ---   Строка: %d  Позиция: %d\n", error, line, pos);
     }
     else
     {
-        printf("--- Ошибка: %s. \'%s\' ---  Строка: %d  Позиция: %d\n", error, a, line, pos);
+        printf("\n--- Ошибка: %s. \'%s\' ---  Строка: %d  Позиция: %d\n", error, a, line, pos);
     }
 
     exit(0);
@@ -70,7 +70,7 @@ void TScanner::PrintError(const char* error, char* a)
 //выдать сообщение об ошибке
 void TScanner::PrintError(const char* error)
 {
-    printf("--- Ошибка: %s. ---    Строка: %d  Позиция: %d\n", error, line, pos);
+    printf("\n--- Ошибка: %s. ---    Строка: %d  Позиция: %d\n", error, line, pos);
 
     exit(0);
 }

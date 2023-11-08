@@ -411,7 +411,7 @@ void TDiagram::P()			//Присваивание
 		scan->PrintError("Ожидался знак =");
 	}
 
-	DATA_TYPE* valType = nullptr;
+	DATA_TYPE* valType = new DATA_TYPE();
 	V(valType);
 
 	root->TypeCastingAssign(ident->GetType(), *valType);
@@ -483,11 +483,13 @@ void TDiagram::V(DATA_TYPE* resType)			//Выражение
 
 	while (type == TEq || type == TNEq)
 	{
+		int znak = type - 51;
+
 		type = scan->Scanner(lex);
 		Z(secondType);
 		type = LookForward(1);
 
-		root->TypeCasting(*resType, *secondType);
+		root->TypeCasting(*resType, *secondType, OP_Name[znak]);
 		*resType = TYPE_INT;
 	}
 }
@@ -519,11 +521,13 @@ void TDiagram::Z(DATA_TYPE* resType)			//Сравнение
 
 	while (type == TLT || type == TGT || type == TLE || type == TGE)
 	{
+		int znak = type - 51;
+
 		type = scan->Scanner(lex);
 		Y(secondType);
 		type = LookForward(1);
 
-		root->TypeCasting(*resType, *secondType);
+		root->TypeCasting(*resType, *secondType, OP_Name[znak]);
 		*resType = TYPE_INT;
 	}
 }
@@ -553,6 +557,8 @@ void TDiagram::M(DATA_TYPE* resType)			//Множитель
 
 	while (type == TMult || type == TDiv || type == TMod)
 	{
+		int znak = type - 51;
+
 		type = scan->Scanner(lex);
 		N(secondType);
 		type = LookForward(1);
@@ -562,7 +568,7 @@ void TDiagram::M(DATA_TYPE* resType)			//Множитель
 			;
 		}
 
-		*resType = root->TypeCasting(*resType, *secondType);
+		*resType = root->TypeCasting(*resType, *secondType, OP_Name[znak]);
 	}
 }
 
@@ -589,6 +595,7 @@ void TDiagram::Y(DATA_TYPE* resType)			//Сдвиг
 
 	while (type == TLShift || type == TRShift)
 	{
+
 		type = scan->Scanner(lex);
 		L(secondType);
 		type = LookForward(1);
@@ -620,11 +627,13 @@ void TDiagram::L(DATA_TYPE* resType)			//Слагаемое
 
 	while (type == TPlus || type == TMinus)
 	{
+		int znak = type - 51;
+
 		type = scan->Scanner(lex);
 		M(secondType);
 		type = LookForward(1);
 
-		*resType = root->TypeCasting(*resType, *secondType);
+		*resType = root->TypeCasting(*resType, *secondType, OP_Name[znak]);
 	}
 }
 

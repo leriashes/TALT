@@ -4,6 +4,10 @@
 
 class TDiagram
 {
+
+	LEX OP_Name[13] = { "==", "!=", "<", ">", "<=", ">=",
+						"<<", ">>", "+", "-", "*", "/", "%" };
+
 private:
 	TScanner* scan;
 	Tree* root;

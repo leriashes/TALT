@@ -145,8 +145,10 @@ Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
 {
 	if (DupControl(cur, a))
 	{
+		printf("\n\n\nÑÅÌÀÍÒÈ×ÅÑÊÎÅ ÄÅÐÅÂÎ\n\n");
 		Tree* root = FindRoot();
 		root->Print();
+		printf("\n\n");
 		scan->PrintError("Ïîâòîðíîå îïèñàíèå èäåíòèôèêàòîðà", a);
 	}
 
@@ -185,15 +187,19 @@ Tree* Tree::SemGetVar(LEX a)
 
 	if (v == NULL)
 	{
+		printf("\n\n\nÑÅÌÀÍÒÈ×ÅÑÊÎÅ ÄÅÐÅÂÎ\n\n");
 		Tree* root = FindRoot();
 		root->Print();
+		printf("\n\n");
 		scan->PrintError("Îòñóòñòâóåò îïèñàíèå èäåíòèôèêàòîðà", a);
 	}
 
 	if (v->node->objType == ObjFunct)
 	{
+		printf("\n\n\nÑÅÌÀÍÒÈ×ÅÑÊÎÅ ÄÅÐÅÂÎ\n\n");
 		Tree* root = FindRoot();
 		root->Print();
+		printf("\n\n");
 		scan->PrintError("Íåâåðíîå èñïîëüçîâàíèå èìåíè ôóíêöèè", a);
 	}
 
@@ -223,15 +229,19 @@ Tree* Tree::SemGetFunct(LEX a)
 
 	if (v == NULL)
 	{
+		printf("\n\n\nÑÅÌÀÍÒÈ×ÅÑÊÎÅ ÄÅÐÅÂÎ\n\n");
 		Tree* root = FindRoot();
 		root->Print();
+		printf("\n\n");
 		scan->PrintError("Îòñóòñòâóåò îïèñàíèå ôóíêöèè", a);
 	}
 
 	if (v->node->objType != ObjFunct)
 	{
+		printf("\n\n\nÑÅÌÀÍÒÈ×ÅÑÊÎÅ ÄÅÐÅÂÎ\n\n");
 		Tree* root = FindRoot();
 		root->Print();
+		printf("\n\n");
 		scan->PrintError("Èäåíòèôèêàòîð íå ÿâëÿåòñÿ èìåíåì ôóíêöèè", a);
 	}
 
@@ -249,11 +259,27 @@ DATA_TYPE Tree::GetType()
 	return node->dataType;
 }
 
-DATA_TYPE Tree::TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType)
+DATA_TYPE Tree::TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX operation)
 {
-	printf("\nÏðèâåäåíèå òèïà %s ê òèïó %s --> %s ------ ñòðîêà %d\n", DT_Name[secondType], DT_Name[firstType], DT_Name[firstType], scan->GetLine());
+	DATA_TYPE resType = firstType;
 
-	return firstType;
+	if (firstType != secondType)
+	{
+		if (firstType == NO_TYPE || secondType == NO_TYPE)
+			resType = NO_TYPE;
+		else if (firstType == TYPE_FLOAT || secondType == TYPE_FLOAT)
+			resType = TYPE_FLOAT;
+		else if (firstType == TYPE_INT || secondType == TYPE_INT)
+			resType = TYPE_INT;
+		else
+			resType = TYPE_SHORT;
+
+	}
+
+
+	printf("\nÏðèâåäåíèå òèïîâ %s è %s (%s) --> %s ------ ñòðîêà %d\n", DT_Name[firstType], DT_Name[secondType], operation, DT_Name[resType], scan->GetLine());
+
+	return resType;
 }
 
 void Tree::TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType)
