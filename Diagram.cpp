@@ -138,10 +138,10 @@ void TDiagram::D()			//Описание данных
 
 		if (type == TSave)
 		{
-			DATA_TYPE valType;
-			V(&valType);
+			NData data;
+			V(&data);
 
-			root->TypeCastingAssign(semType, valType);
+			root->TypeCastingAssign(semType, data.type);
 
 			type = scan->Scanner(lex);
 		}
@@ -295,7 +295,7 @@ void TDiagram::A()			//Оператор
 	LEX lex;
 	int type;
 
-	DATA_TYPE resType;
+	NData res;
 
 	type = LookForward(1);
 
@@ -319,7 +319,7 @@ void TDiagram::A()			//Оператор
 		}
 		else if (type == TMain)
 		{
-			K(&resType);
+			K(&res);
 		}
 		else if (type == TIdent)
 		{
@@ -331,7 +331,7 @@ void TDiagram::A()			//Оператор
 			}
 			else
 			{
-				K(&resType);
+				K(&res);
 			}
 		}
 
@@ -370,8 +370,8 @@ void TDiagram::W()			//while
 		scan->PrintError("Ожидался символ '('");
 	}
 
-	DATA_TYPE valType;
-	V(&valType);
+	NData data;
+	V(&data);
 
 	type = scan->Scanner(lex);
 
@@ -411,10 +411,10 @@ void TDiagram::P()			//Присваивание
 		scan->PrintError("Ожидался знак =");
 	}
 
-	DATA_TYPE valType;
-	V(&valType);
+	NData data;
+	V(&data);
 
-	root->TypeCastingAssign(ident->GetType(), valType);
+	root->TypeCastingAssign(ident->GetType(), data.type);
 }
 
 
@@ -436,10 +436,10 @@ void TDiagram::R()			//return
 		scan->PrintError("Ожидался оператор 'return'");
 	}
 
-	DATA_TYPE valType;
-	V(&valType);
+	NData data;
+	V(&data);
 
-	root->TypeCastingAssign(root->GetCur()->GetCurrentFunct()->GetType(), valType);
+	root->TypeCastingAssign(root->GetCur()->GetCurrentFunct()->GetType(), data.type);
 }
 
 
@@ -462,7 +462,7 @@ void TDiagram::B()			//break
 
 
 
-void TDiagram::V(DATA_TYPE* resType)			//Выражение
+void TDiagram::V(NData* res)			//Выражение
 //               
 //                -----   ----- == ----
 //             ---| Z |---|           |---
@@ -475,9 +475,9 @@ void TDiagram::V(DATA_TYPE* resType)			//Выражение
 	LEX lex;
 	int type;
 
-	DATA_TYPE secondType;
+	NData secondData;
 
-	Z(resType);
+	Z(res);
 
 	type = LookForward(1);
 
@@ -486,17 +486,17 @@ void TDiagram::V(DATA_TYPE* resType)			//Выражение
 		int znak = type - 51;
 
 		type = scan->Scanner(lex);
-		Z(&secondType);
+		Z(&secondData);
 		type = LookForward(1);
 
-		root->TypeCasting(*resType, secondType, OP_Name[znak]);
-		*resType = TYPE_INT;
+		root->TypeCasting(res->type, secondData.type, OP_Name[znak]);
+		res->type = TYPE_INT;
 	}
 }
 
 
 
-void TDiagram::Z(DATA_TYPE* resType)			//Сравнение
+void TDiagram::Z(NData* res)			//Сравнение
 //    
 //					      ----- < -----   
 //					      |           |
@@ -513,9 +513,9 @@ void TDiagram::Z(DATA_TYPE* resType)			//Сравнение
 	LEX lex;
 	int type;
 
-	DATA_TYPE secondType;
+	NData secondData;
 
-	Y(resType);
+	Y(res);
 
 	type = LookForward(1);
 
@@ -524,17 +524,17 @@ void TDiagram::Z(DATA_TYPE* resType)			//Сравнение
 		int znak = type - 51;
 
 		type = scan->Scanner(lex);
-		Y(&secondType);
+		Y(&secondData);
 		type = LookForward(1);
 
-		root->TypeCasting(*resType, secondType, OP_Name[znak]);
-		*resType = TYPE_INT;
+		root->TypeCasting(res->type, secondData.type, OP_Name[znak]);
+		res->type = TYPE_INT;
 	}
 }
 
 
 
-void TDiagram::M(DATA_TYPE* resType)			//Множитель
+void TDiagram::M(NData* res)			//Множитель
 // 
 //					      ----- * -----   
 //			              |           |
@@ -549,15 +549,15 @@ void TDiagram::M(DATA_TYPE* resType)			//Множитель
 	LEX lex;
 	int type;
 
-	DATA_TYPE secondType;
+	NData secondData;
 
-	N(resType);
+	N(res);
 
 	type = LookForward(1);
 
 	if (type == TMod)
 	{
-		root->CheckTypeInt(*resType);
+		root->CheckTypeInt(res->type);
 	}
 
 	while (type == TMult || type == TDiv || type == TMod)
@@ -565,22 +565,22 @@ void TDiagram::M(DATA_TYPE* resType)			//Множитель
 		int znak = type - 51;
 
 		type = scan->Scanner(lex);
-		N(&secondType);
+		N(&secondData);
 
 		if (type == TMod)
 		{
-			root->CheckTypeInt(secondType);
+			root->CheckTypeInt(secondData.type);
 		}
 
 		type = LookForward(1);
 
-		*resType = root->TypeCasting(*resType, secondType, OP_Name[znak]);
+		res->type = root->TypeCasting(res->type, secondData.type, OP_Name[znak]);
 	}
 }
 
 
 
-void TDiagram::Y(DATA_TYPE* resType)			//Сдвиг
+void TDiagram::Y(NData* res)			//Сдвиг
 //               
 //                -----   ----- << ----
 //             ---| L |---|           |---
@@ -593,34 +593,34 @@ void TDiagram::Y(DATA_TYPE* resType)			//Сдвиг
 	LEX lex;
 	int type;
 
-	DATA_TYPE secondType;
+	NData secondData;
 
-	L(resType);
+	L(res);
 
 	type = LookForward(1);
 
 	if (type == TLShift || type == TRShift)
 	{
-		root->CheckTypeInt(*resType);
+		root->CheckTypeInt(res->type);
 	}
 
 	while (type == TLShift || type == TRShift)
 	{
 
 		type = scan->Scanner(lex);
-		L(&secondType);
+		L(&secondData);
 
-		root->CheckTypeInt(secondType);
+		root->CheckTypeInt(secondData.type);
 
 		type = LookForward(1);
 
-		*resType = TYPE_INT;
+		res->type = TYPE_INT;
 	}
 }
 
 
 
-void TDiagram::L(DATA_TYPE* resType)			//Слагаемое
+void TDiagram::L(NData* res)			//Слагаемое
 //               
 //                -----   ----- + ----
 //             ---| M |---|           |---
@@ -633,9 +633,9 @@ void TDiagram::L(DATA_TYPE* resType)			//Слагаемое
 	LEX lex;
 	int type;
 
-	DATA_TYPE secondType;
+	NData secondData;
 
-	M(resType);
+	M(res);
 
 	type = LookForward(1);
 
@@ -644,16 +644,16 @@ void TDiagram::L(DATA_TYPE* resType)			//Слагаемое
 		int znak = type - 51;
 
 		type = scan->Scanner(lex);
-		M(&secondType);
+		M(&secondData);
 		type = LookForward(1);
 
-		*resType = root->TypeCasting(*resType, secondType, OP_Name[znak]);
+		res->type = root->TypeCasting(res->type, secondData.type, OP_Name[znak]);
 	}
 }
 
 
 
-void TDiagram::N(DATA_TYPE* resType)			//Со знаком
+void TDiagram::N(NData* res)			//Со знаком
 //					 --- a -----------------
 //                   |                     |
 //		--- + ---    |-- c1 ---------------|            
@@ -682,7 +682,7 @@ void TDiagram::N(DATA_TYPE* resType)			//Со знаком
 	{
 		type = scan->Scanner(lex);
 
-		V(resType);
+		V(res);
 
 		type = scan->Scanner(lex);
 
@@ -693,7 +693,7 @@ void TDiagram::N(DATA_TYPE* resType)			//Со знаком
 	}
 	else if (type == TMain)
 	{
-		K(resType);
+		K(res);
 	}
 	else if (type == TIdent)
 	{
@@ -701,12 +701,12 @@ void TDiagram::N(DATA_TYPE* resType)			//Со знаком
 
 		if (type == TLS)
 		{
-			K(resType);
+			K(res);
 		}
 		else
 		{
 			type = scan->Scanner(lex);
-			*resType = root->SemGetVar(lex)->GetType();
+			res->type = root->SemGetVar(lex)->GetType();
 		}
 
 	}
@@ -716,11 +716,11 @@ void TDiagram::N(DATA_TYPE* resType)			//Со знаком
 
 		if (type == TConstInt)
 		{
-			*resType = TYPE_INT;
+			res->type = TYPE_INT;
 		}
 		else if (type == TConstFloat)
 		{
-			*resType = TYPE_FLOAT;
+			res->type = TYPE_FLOAT;
 		}
 		else
 		{
@@ -731,7 +731,7 @@ void TDiagram::N(DATA_TYPE* resType)			//Со знаком
 
 
 
-void TDiagram::K(DATA_TYPE* resType)			//Вызов функции
+void TDiagram::K(NData* res)			//Вызов функции
 // 
 //		----- a -----                
 // -----|			|--- ( --- ) ----->

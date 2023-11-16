@@ -33,5 +33,8 @@ int main()
     diag->PrintTree();
     printf("\n\n");
 
+    delete scan;
+    delete diag;
+
     return 0;
 }

@@ -8,11 +8,22 @@ enum OBJ_TYPE {Empty = 0,
 
 enum DATA_TYPE {NO_TYPE = 0, TYPE_INT, TYPE_SHORT, TYPE_FLOAT};
 
+union DATA_VALUE {
+	short DataAsShort;
+	int DataAsInt;
+	float DataAsFloat;
+};
+
+struct NData {
+	DATA_TYPE type;	//тип значения
+	DATA_VALUE value;	//значение
+};
+
 struct Node
 {
 	OBJ_TYPE objType;	//тип объекта
 	LEX id;				//идентификатор объекта
-	DATA_TYPE dataType;	//тип значения
+	NData data;			//тип значения и само значение
 };
 
 class Tree			//элемент семантической таблицы

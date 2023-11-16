@@ -22,13 +22,13 @@ private:
 	void P();		//присваивание
 	void R();		//return
 	void B();		//break
-	void V(DATA_TYPE* resType);		//выражение
-	void Z(DATA_TYPE* resType);		//сравнение
-	void M(DATA_TYPE* resType);		//множитель
-	void Y(DATA_TYPE* resType);		//сдвиг
-	void L(DATA_TYPE* resType);		//слагаемое
-	void N(DATA_TYPE* resType);		//со знаком
-	void K(DATA_TYPE* resType);		//вызов функции
+	void V(NData* res);		//выражение
+	void Z(NData* res);		//сравнение
+	void M(NData* res);		//множитель
+	void Y(NData* res);		//сдвиг
+	void L(NData* res);		//слагаемое
+	void N(NData* res);		//со знаком
+	void K(NData* res);		//вызов функции
 
 public:
 	TDiagram(TScanner* s) { scan = s; root = new Tree(scan); }

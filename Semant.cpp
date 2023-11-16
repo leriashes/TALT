@@ -8,7 +8,7 @@ Tree::Tree(TScanner* scan)
 
 	node = new Node();
 	node->objType = Empty;
-	node->dataType = NO_TYPE;
+	node->data.type = NO_TYPE;
 
 	parent = NULL;
 	left = NULL;
@@ -82,7 +82,7 @@ Tree* Tree::FindUpOneLevel(Tree* from, LEX id)
 void Tree::Print()
 {
 	if (node->objType != Empty)
-		printf("Вершина с данными %s ------>", node->id);
+		printf("Вершина с данными %s (%s) ------>", node->id, DT_Name[node->data.type]);
 	else
 		printf("Вершина ПУСТАЯ ------>");
 
@@ -157,7 +157,7 @@ Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
 
 	memcpy(n.id, a, strlen(a) + 1);
 	n.objType = ot;
-	n.dataType = t;
+	n.data.type = t;
 	
 	if (this->node->objType == Empty && this->parent == NULL && this->left == NULL && this->right == NULL)
 		memcpy(node, &n, sizeof(Node));
@@ -256,7 +256,7 @@ int Tree::DupControl(Tree* addr, LEX a)
 
 DATA_TYPE Tree::GetType()
 {
-	return node->dataType;
+	return node->data.type;
 }
 
 DATA_TYPE Tree::TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX operation)
