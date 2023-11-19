@@ -483,13 +483,11 @@ void TDiagram::V(DATA_TYPE* resType)			//Выражение
 
 	while (type == TEq || type == TNEq)
 	{
-		int znak = type - 51;
-
 		type = scan->Scanner(lex);
 		Z(&secondType);
 		type = LookForward(1);
 
-		root->TypeCasting(*resType, secondType, OP_Name[znak]);
+		root->TypeCasting(*resType, secondType, OP_Name[type - 51]);
 		*resType = TYPE_INT;
 	}
 }
@@ -521,13 +519,11 @@ void TDiagram::Z(DATA_TYPE* resType)			//Сравнение
 
 	while (type == TLT || type == TGT || type == TLE || type == TGE)
 	{
-		int znak = type - 51;
-
 		type = scan->Scanner(lex);
 		Y(&secondType);
 		type = LookForward(1);
 
-		root->TypeCasting(*resType, secondType, OP_Name[znak]);
+		root->TypeCasting(*resType, secondType, OP_Name[type - 51]);
 		*resType = TYPE_INT;
 	}
 }
@@ -562,8 +558,6 @@ void TDiagram::M(DATA_TYPE* resType)			//Множитель
 
 	while (type == TMult || type == TDiv || type == TMod)
 	{
-		int znak = type - 51;
-
 		type = scan->Scanner(lex);
 		N(&secondType);
 
@@ -574,7 +568,7 @@ void TDiagram::M(DATA_TYPE* resType)			//Множитель
 
 		type = LookForward(1);
 
-		*resType = root->TypeCasting(*resType, secondType, OP_Name[znak]);
+		*resType = root->TypeCasting(*resType, secondType, OP_Name[type - 51]);
 	}
 }
 
@@ -641,13 +635,11 @@ void TDiagram::L(DATA_TYPE* resType)			//Слагаемое
 
 	while (type == TPlus || type == TMinus)
 	{
-		int znak = type - 51;
-
 		type = scan->Scanner(lex);
 		M(&secondType);
 		type = LookForward(1);
 
-		*resType = root->TypeCasting(*resType, secondType, OP_Name[znak]);
+		*resType = root->TypeCasting(*resType, secondType, OP_Name[type - 51]);
 	}
 }
 
