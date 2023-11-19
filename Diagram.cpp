@@ -749,6 +749,7 @@ void TDiagram::K(NData* res)			//Вызов функции
 	}
 
 	Tree* funct = root->SemGetFunct(lex);
+	*resType = funct->GetType();
 
 	type = scan->Scanner(lex);
 
