@@ -483,6 +483,8 @@ void TDiagram::V(NData* res)			//Выражение
 
 	while (type == TEq || type == TNEq)
 	{
+		int znak = type - 51;
+
 		type = scan->Scanner(lex);
 		Z(&secondData);
 		type = LookForward(1);
@@ -519,6 +521,8 @@ void TDiagram::Z(NData* res)			//Сравнение
 
 	while (type == TLT || type == TGT || type == TLE || type == TGE)
 	{
+		int znak = type - 51;
+
 		type = scan->Scanner(lex);
 		Y(&secondData);
 		type = LookForward(1);
@@ -558,6 +562,8 @@ void TDiagram::M(NData* res)			//Множитель
 
 	while (type == TMult || type == TDiv || type == TMod)
 	{
+		int znak = type - 51;
+
 		type = scan->Scanner(lex);
 		N(&secondData);
 
@@ -635,6 +641,8 @@ void TDiagram::L(NData* res)			//Слагаемое
 
 	while (type == TPlus || type == TMinus)
 	{
+		int znak = type - 51;
+
 		type = scan->Scanner(lex);
 		M(&secondData);
 		type = LookForward(1);
