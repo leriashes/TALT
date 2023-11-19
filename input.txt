@@ -1,9 +1,14 @@
 float im;
 int a;
+
+float puk()
+{
+;}
+
 short fun ()
 {
 	int i;
-	i = 15 / 2 + (im >> im) - a + 31.5;
+	i = 15 / 2 + (i >> 2) * puk() / fun() + 31.5;
 	return im;
 }
 
