@@ -144,6 +144,19 @@ void TDiagram::D()			//Описание данных
 			root->TypeCastingAssign(semType, data.type);
 
 			type = scan->Scanner(lex);
+
+			if (v->GetType() == TYPE_SHORT)
+			{
+				v->GetValue()->DataAsShort = data.value.DataAsShort;
+			}
+			else if (v->GetType() == TYPE_INT)
+			{
+				v->GetValue()->DataAsInt = data.value.DataAsInt;
+			}
+			else
+			{
+				v->GetValue()->DataAsFloat = data.value.DataAsFloat;
+			}
 		}
 
 	} while (type == TComma);
@@ -749,7 +762,7 @@ void TDiagram::K(NData* res)			//Вызов функции
 	}
 
 	Tree* funct = root->SemGetFunct(lex);
-	*resType = funct->GetType();
+	res->type = funct->GetType();
 
 	type = scan->Scanner(lex);
 

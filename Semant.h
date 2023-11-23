@@ -69,5 +69,7 @@ public:
 
 	DATA_TYPE GetType();
 	DATA_TYPE GetTypebyLex(int lexType);
+
+	DATA_VALUE* GetValue();
 };
 

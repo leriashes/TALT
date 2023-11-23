@@ -306,4 +306,9 @@ void Tree::CheckTypeInt(DATA_TYPE type)
 	}
 }
 
+DATA_VALUE* Tree::GetValue()
+{
+	return &(node->data.value);
+}
+
 
