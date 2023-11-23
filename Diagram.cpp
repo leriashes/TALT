@@ -720,6 +720,7 @@ void TDiagram::N(NData* res)			//Со знаком
 		{
 			type = scan->Scanner(lex);
 			res->type = root->SemGetVar(lex)->GetType();
+			res->value = *root->SemGetVar(lex)->GetValue();
 		}
 
 	}
@@ -730,10 +731,12 @@ void TDiagram::N(NData* res)			//Со знаком
 		if (type == TConstInt)
 		{
 			res->type = TYPE_INT;
+			res->value.DataAsInt = atoi(lex);
 		}
 		else if (type == TConstFloat)
 		{
 			res->type = TYPE_FLOAT;
+			res->value.DataAsInt = atof(lex);
 		}
 		else
 		{
@@ -763,6 +766,19 @@ void TDiagram::K(NData* res)			//Вызов функции
 
 	Tree* funct = root->SemGetFunct(lex);
 	res->type = funct->GetType();
+	
+	if (res->type == TYPE_SHORT)
+	{
+		res->value.DataAsShort = funct->GetValue()->DataAsShort;
+	}
+	else if (res->type == TYPE_INT)
+	{
+		res->value.DataAsInt = funct->GetValue()->DataAsInt;
+	}
+	else
+	{
+		res->value.DataAsFloat = funct->GetValue()->DataAsFloat;
+	}
 
 	type = scan->Scanner(lex);
 
