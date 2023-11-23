@@ -64,7 +64,7 @@ public:
 	int DupControl(Tree* addr, LEX a);			//проверка идентификатора a на повторное описание внутри блока
 
 	DATA_TYPE TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX operation);
-	void TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType);
+	NData TypeCastingAssign(DATA_TYPE firstType, NData secondData);
 	void CheckTypeInt(DATA_TYPE type);
 
 	DATA_TYPE GetType();

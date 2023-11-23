@@ -282,9 +282,68 @@ DATA_TYPE Tree::TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX opera
 	return resType;
 }
 
-void Tree::TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType)
+NData Tree::TypeCastingAssign(DATA_TYPE firstType, NData secondData)
 {
-	printf("\nПриведение типа %s к типу %s (присваивание) --> %s ------ строка %d\n", DT_Name[secondType], DT_Name[firstType], DT_Name[firstType], scan->GetLine());
+	printf("\nПриведение типа %s к типу %s (присваивание) --> %s ------ строка %d\n", DT_Name[secondData.type], DT_Name[firstType], DT_Name[firstType], scan->GetLine());
+	if (firstType == TYPE_SHORT)
+	{
+		if (secondData.type != TYPE_SHORT)
+		{
+			if (secondData.type == TYPE_INT)
+			{
+				secondData.value.DataAsShort = secondData.value.DataAsInt;
+			}
+			else
+			{
+				secondData.value.DataAsShort = secondData.value.DataAsFloat;
+			}
+
+			secondData.type = TYPE_SHORT;
+		}
+
+		printf("\tТип: short\tЗначение: %d", secondData.value.DataAsShort);
+	}
+	else if (firstType == TYPE_INT)
+	{
+		if (secondData.type != TYPE_INT)
+		{
+			int res;
+
+			if (secondData.type == TYPE_SHORT)
+			{
+				res = secondData.value.DataAsShort;
+			}
+			else
+			{
+				res = secondData.value.DataAsFloat;
+			}
+
+			secondData.type = TYPE_INT;
+			secondData.value.DataAsInt = res;
+		}
+
+		printf("\tТип: int\tЗначение: %d", secondData.value.DataAsInt);
+	}
+	else
+	{
+		if (secondData.type != TYPE_FLOAT)
+		{
+			if (secondData.type == TYPE_SHORT)
+			{
+				secondData.value.DataAsFloat = secondData.value.DataAsShort;
+			}
+			else
+			{
+				secondData.value.DataAsFloat = secondData.value.DataAsInt;
+			}
+
+			secondData.type = TYPE_FLOAT;
+		}
+
+		printf("\tТип: float\tЗначение: %f", secondData.value.DataAsFloat);
+	}
+
+	return secondData;
 }
 
 DATA_TYPE Tree::GetTypebyLex(int lexType)

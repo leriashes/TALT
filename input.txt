@@ -1,29 +1,10 @@
-float im;
-int a;
-
-float puk()
-{
-;}
+float im = 3.4;
+int a = 12;
+short h = im;
 
 short fun ()
 {
-	int i;
-	i = 15 / 2 + (i >> 2) * puk() / fun() + 31.5;
-	return im;
-}
-
-int main ()
-{
-	long n = a + im;
-	{float a, b;}
-
-	while (n < 0)
-	{
-		float i;
-
-		{short ik;
-		return i;}
-	}
-	return a;
+	int i = 7.2;
+	im = i;
 }
 

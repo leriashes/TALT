@@ -134,6 +134,8 @@ void TDiagram::D()			//Описание данных
 
 		Tree* v = root->SemInclude(lex, ObjVar, semType);
 
+		printf("\n\nОписание переменной: %s", lex);
+
 		type = scan->Scanner(lex);
 
 		if (type == TSave)
@@ -141,7 +143,7 @@ void TDiagram::D()			//Описание данных
 			NData data;
 			V(&data);
 
-			root->TypeCastingAssign(semType, data.type);
+			data = root->TypeCastingAssign(semType, data);
 
 			type = scan->Scanner(lex);
 
@@ -417,6 +419,8 @@ void TDiagram::P()			//Присваивание
 
 	Tree* ident = root->SemGetVar(lex);
 
+	printf("\n\nПрисваивание значения переменной: %s", lex);
+
 	type = scan->Scanner(lex);
 
 	if (type != TSave)
@@ -427,7 +431,21 @@ void TDiagram::P()			//Присваивание
 	NData data;
 	V(&data);
 
-	root->TypeCastingAssign(ident->GetType(), data.type);
+	data = root->TypeCastingAssign(ident->GetType(), data);
+
+	if (ident->GetType() == TYPE_SHORT)
+	{
+		ident->GetValue()->DataAsShort = data.value.DataAsShort;
+
+	}
+	else if (ident->GetType() == TYPE_INT)
+	{
+		ident->GetValue()->DataAsInt = data.value.DataAsInt;
+	}
+	else
+	{
+		ident->GetValue()->DataAsFloat = data.value.DataAsFloat;
+	}
 }
 
 
@@ -452,7 +470,7 @@ void TDiagram::R()			//return
 	NData data;
 	V(&data);
 
-	root->TypeCastingAssign(root->GetCur()->GetCurrentFunct()->GetType(), data.type);
+	root->TypeCastingAssign(root->GetCur()->GetCurrentFunct()->GetType(), data);
 }
 
 
@@ -736,7 +754,8 @@ void TDiagram::N(NData* res)			//Со знаком
 		else if (type == TConstFloat)
 		{
 			res->type = TYPE_FLOAT;
-			res->value.DataAsInt = atof(lex);
+			float a = atof(lex);
+			res->value.DataAsFloat = atof(lex);
 		}
 		else
 		{

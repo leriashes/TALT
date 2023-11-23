@@ -172,7 +172,8 @@ start:
 
         if (text[uk] == '.')
         {
-            lex[i++] = text[uk++];
+            lex[i++] = ',';
+            text[uk++];
             pos++;
             goto N1;
         }
