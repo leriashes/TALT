@@ -31,8 +31,16 @@ private:
 	void K(NData* res);		//âûçîâ ôóíêöèè
 
 public:
+
+	bool DEBUG = true;
 	TDiagram(TScanner* s) { scan = s; root = new Tree(scan); }
-	~TDiagram() {}
+	~TDiagram() {
+		if (DEBUG) {
+			printf("ÎÑÂÎÁÎÆÄÅÍÈÅ ÏÀÌßÒÈ - êîíåö ïðîãðàììû\n");
+		}
+		root->CleanTree();
+		delete root;
+	}
 
 	void PrintTree();
 

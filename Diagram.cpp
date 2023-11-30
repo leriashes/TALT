@@ -161,6 +161,12 @@ void TDiagram::D()			//Îïèñàíèå äàííûõ
 			}
 		}
 
+		if (DEBUG)
+		{
+			printf("\n\nÑÅÌÀÍÒÈ×ÅÑÊÎÅ ÄÅÐÅÂÎ\n\n");
+			PrintTree();
+		}
+
 	} while (type == TComma);
 
 	if (type != TSemicolon)
@@ -281,6 +287,15 @@ void TDiagram::Q()			//Ñîñòàâíîé îïåðàòîð
 	}
 
 	root->SetCur(v);
+
+	v->CleanChild();
+	if (DEBUG)
+	{
+		printf("\n\nÎÑÂÎÁÎÆÄÅÍÈÅ ÏÀÌßÒÈ - êîíåö ñîñòàâíîãî îïåðàòîðà");
+
+		printf("\n\nÑÅÌÀÍÒÈ×ÅÑÊÎÅ ÄÅÐÅÂÎ\n\n");
+		PrintTree();
+	}
 }
 
 
@@ -678,7 +693,33 @@ void TDiagram::L(NData* res)			//Ñëàãàåìîå
 		M(&secondData);
 		type = LookForward(1);
 
-		res->type = root->TypeCasting(res->type, secondData.type, OP_Name[znak]);
+		DATA_TYPE resultType = root->TypeCasting(res->type, secondData.type, OP_Name[znak]);
+
+		if (res->type != resultType)
+		{
+			if (resultType == TYPE_FLOAT)
+			{
+				if (res->type == TYPE_INT)
+				{
+					res->value.DataAsFloat = res->value.DataAsInt;
+				}
+				else
+				{
+					res->value.DataAsFloat = res->value.DataAsShort;
+				}
+			}
+			else if (resultType == TYPE_INT)
+			{
+				if (res->type == TYPE_FLOAT)
+				{
+					res->value.DataAsInt = res->value.DataAsFloat;
+				}
+				else
+				{
+					res->value.DataAsInt = res->value.DataAsShort;
+				}
+			}
+		}
 	}
 }
 
@@ -700,11 +741,18 @@ void TDiagram::N(NData* res)			//Ñî çíàêîì
 	LEX lex;
 	int type;
 
+	bool mns = false;
+
 	type = LookForward(1);
 
 	if (type == TPlus || type == TMinus)
 	{
 		type = scan->Scanner(lex);
+
+		if (type == TMinus)
+		{
+			mns = true;
+		}
 	}
 
 	type = LookForward(1);
@@ -760,6 +808,22 @@ void TDiagram::N(NData* res)			//Ñî çíàêîì
 		else
 		{
 			scan->PrintError("Îæèäàëîñü âûðàæåíèå");
+		}
+	}
+
+	if (mns)
+	{
+		if (res->type == TYPE_SHORT)
+		{
+			res->value.DataAsShort = -res->value.DataAsShort;
+		}
+		else if (res->type == TYPE_INT)
+		{
+			res->value.DataAsInt = -res->value.DataAsInt;
+		}
+		else
+		{
+			res->value.DataAsFloat = -res->value.DataAsFloat;
 		}
 	}
 }

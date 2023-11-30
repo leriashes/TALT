@@ -53,6 +53,8 @@ public:
 	Tree* GetCurrentFunct();
 
 	void Print();
+	void CleanTree();
+	void CleanChild();
 
 	//Семантичексие подпрограммы
 	void SetCur(Tree* a);			//установить текущий узел дерева

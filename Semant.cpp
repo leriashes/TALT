@@ -346,6 +346,28 @@ NData Tree::TypeCastingAssign(DATA_TYPE firstType, NData secondData)
 	return secondData;
 }
 
+void Tree::CleanChild()
+{
+	if (right != NULL)
+	{
+		right->CleanTree();
+		delete right;
+		right = NULL;
+	}
+}
+
+void Tree::CleanTree()
+{
+	if (left != NULL)
+	{
+		left->CleanTree();
+		delete left;
+		left = NULL;
+	}
+
+	CleanChild();
+}
+
 DATA_TYPE Tree::GetTypebyLex(int lexType)
 {
 	if (lexType == TShort)

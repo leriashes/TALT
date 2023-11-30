@@ -26,12 +26,16 @@ int main()
     }
     else
     {
-        printf("\n\nОшибки не найдены.\n");
+        printf("\n\nОшибки не найдены.\n\n");
     }
-
-    printf("\n\n\nСЕМАНТИЧЕСКОЕ ДЕРЕВО\n\n");
-    diag->PrintTree();
-    printf("\n\n");
+    
+    /*if (diag->DEBUG)
+    {
+        printf("\n\n\nСЕМАНТИЧЕСКОЕ ДЕРЕВО\n\n");
+        diag->PrintTree();
+        printf("\n\n");
+    }*/
+    
 
     delete scan;
     delete diag;

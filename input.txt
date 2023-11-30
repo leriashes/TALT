@@ -1,9 +1,19 @@
 float im = 3.4;
-int a = 12;
+int a = -12;
 short h = im;
 
 short fun ()
 {
+	{
+		im = 0.03;
+		float b;
+		{
+			short g = 34.1;
+			b = g;
+		}
+		b = im;
+	}
+
 	int i = 7.2;
 	im = i;
 }
