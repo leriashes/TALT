@@ -535,7 +535,7 @@ void TDiagram::V(NData* res)			//Выражение
 		Z(&secondData);
 		type = LookForward(1);
 
-		root->TypeCasting(res->type, secondData.type, OP_Name[znak]);
+		root->TypeCasting(res, secondData.type, OP_Name[znak]);
 		res->type = TYPE_INT;
 	}
 }
@@ -573,7 +573,7 @@ void TDiagram::Z(NData* res)			//Сравнение
 		Y(&secondData);
 		type = LookForward(1);
 
-		root->TypeCasting(res->type, secondData.type, OP_Name[znak]);
+		root->TypeCasting(res, secondData.type, OP_Name[znak]);
 		res->type = TYPE_INT;
 	}
 }
@@ -620,7 +620,7 @@ void TDiagram::M(NData* res)			//Множитель
 
 		type = LookForward(1);
 
-		res->type = root->TypeCasting(res->type, secondData.type, OP_Name[znak]);
+		root->TypeCasting(res, secondData.type, OP_Name[znak]);
 	}
 }
 
@@ -687,37 +687,85 @@ void TDiagram::L(NData* res)			//Слагаемое
 
 	while (type == TPlus || type == TMinus)
 	{
-		int znak = type - 51;
+		int znak = type;
 
 		type = scan->Scanner(lex);
 		M(&secondData);
 		type = LookForward(1);
 
-		DATA_TYPE resultType = root->TypeCasting(res->type, secondData.type, OP_Name[znak]);
+		root->TypeCasting(res, secondData.type, OP_Name[znak - 51]);
 
-		if (res->type != resultType)
+
+		if (res->type == TYPE_FLOAT)
 		{
-			if (resultType == TYPE_FLOAT)
+			if (secondData.type == TYPE_FLOAT)
 			{
-				if (res->type == TYPE_INT)
-				{
-					res->value.DataAsFloat = res->value.DataAsInt;
-				}
+				if (znak == TPlus)
+					res->value.DataAsFloat += secondData.value.DataAsFloat;
 				else
-				{
-					res->value.DataAsFloat = res->value.DataAsShort;
-				}
+					res->value.DataAsFloat -= secondData.value.DataAsFloat;
 			}
-			else if (resultType == TYPE_INT)
+			else if (secondData.type == TYPE_INT)
 			{
-				if (res->type == TYPE_FLOAT)
-				{
-					res->value.DataAsInt = res->value.DataAsFloat;
-				}
+				if (znak == TPlus)
+					res->value.DataAsFloat += secondData.value.DataAsInt;
 				else
-				{
-					res->value.DataAsInt = res->value.DataAsShort;
-				}
+					res->value.DataAsFloat -= secondData.value.DataAsInt;
+			}
+			else
+			{
+				if (znak == TPlus)
+					res->value.DataAsFloat += secondData.value.DataAsShort;
+				else
+					res->value.DataAsFloat -= secondData.value.DataAsShort;
+			}
+		}
+		else if (res->type == TYPE_INT)
+		{
+			if (secondData.type == TYPE_FLOAT)
+			{
+				if (znak == TPlus)
+					res->value.DataAsInt += secondData.value.DataAsFloat;
+				else
+					res->value.DataAsInt -= secondData.value.DataAsFloat;
+			}
+			else if (secondData.type == TYPE_INT)
+			{
+				if (znak == TPlus)
+					res->value.DataAsInt += secondData.value.DataAsInt;
+				else
+					res->value.DataAsInt -= secondData.value.DataAsInt;
+			}
+			else
+			{
+				if (znak == TPlus)
+					res->value.DataAsInt += secondData.value.DataAsShort;
+				else
+					res->value.DataAsInt -= secondData.value.DataAsShort;
+			}
+		}
+		else
+		{
+			if (secondData.type == TYPE_FLOAT)
+			{
+				if (znak == TPlus)
+					res->value.DataAsShort += secondData.value.DataAsFloat;
+				else
+					res->value.DataAsShort -= secondData.value.DataAsFloat;
+			}
+			else if (secondData.type == TYPE_INT)
+			{
+				if (znak == TPlus)
+					res->value.DataAsShort += secondData.value.DataAsInt;
+				else
+					res->value.DataAsShort -= secondData.value.DataAsInt;
+			}
+			else
+			{
+				if (znak == TPlus)
+					res->value.DataAsShort += secondData.value.DataAsShort;
+				else
+					res->value.DataAsShort -= secondData.value.DataAsShort;
 			}
 		}
 	}
