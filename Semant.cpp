@@ -259,21 +259,23 @@ DATA_TYPE Tree::GetType()
 	return node->data.type;
 }
 
-void Tree::TypeCasting(NData* firstData, DATA_TYPE secondType, LEX operation)
+void Tree::TypeCasting(NData* firstData, NData secondData, int operation, LEX operationName)
 {
 	DATA_TYPE resType = firstData->type;
 
-	if (resType != secondType)
+	if (resType != secondData.type)
 	{
-		if (resType == NO_TYPE || secondType == NO_TYPE)
+		if (resType == NO_TYPE || secondData.type == NO_TYPE)
 			resType = NO_TYPE;
-		else if (resType == TYPE_FLOAT || secondType == TYPE_FLOAT)
+		else if (resType == TYPE_FLOAT || secondData.type == TYPE_FLOAT)
 			resType = TYPE_FLOAT;
-		else if (resType == TYPE_INT || secondType == TYPE_INT)
+		else if (resType == TYPE_INT || secondData.type == TYPE_INT)
 			resType = TYPE_INT;
 		else
 			resType = TYPE_SHORT;
 	}
+
+	printf("\nПриведение типов %s и %s (%s) --> %s ------ строка %d\n", DT_Name[firstData->type], DT_Name[secondData.type], operationName, DT_Name[resType], scan->GetLine());
 
 	if (firstData->type != resType)
 	{
@@ -312,8 +314,417 @@ void Tree::TypeCasting(NData* firstData, DATA_TYPE secondType, LEX operation)
 		}
 	}
 
+	firstData->type = resType;
 
-	printf("\nПриведение типов %s и %s (%s) --> %s ------ строка %d\n", DT_Name[firstData->type], DT_Name[secondType], operation, DT_Name[resType], scan->GetLine());
+	if (resType == TYPE_FLOAT)
+	{
+		if (secondData.type == TYPE_FLOAT)
+		{
+			//L - слагаемое
+			if (operation == TPlus)
+				firstData->value.DataAsFloat += secondData.value.DataAsFloat;
+			else if (operation == TMinus)
+				firstData->value.DataAsFloat -= secondData.value.DataAsFloat;
+
+			//M - множитель
+			else if (operation == TMult)
+				firstData->value.DataAsFloat *= secondData.value.DataAsFloat;
+			else if (operation == TDiv)
+				firstData->value.DataAsFloat /= secondData.value.DataAsFloat;
+
+			//Z - сравнение
+			else if (operation == TLT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat < secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat > secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TLE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat <= secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat >= secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+
+			//V - выражение
+			else if (operation == TEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat == secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TNEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat != secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+		}
+		else if (secondData.type == TYPE_INT)
+		{
+			if (operation == TPlus)
+				firstData->value.DataAsFloat += secondData.value.DataAsInt;
+			else if (operation == TMinus)
+				firstData->value.DataAsFloat -= secondData.value.DataAsInt;
+			else if (operation == TMult)
+				firstData->value.DataAsFloat *= secondData.value.DataAsInt;
+			else if (operation == TDiv)
+				firstData->value.DataAsFloat /= secondData.value.DataAsInt;
+
+			else if (operation == TLT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat < secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat > secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TLE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat <= secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat >= secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+
+			else if (operation == TEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat == secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TNEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat != secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+		}
+		else
+		{
+			if (operation == TPlus)
+				firstData->value.DataAsFloat += secondData.value.DataAsShort;
+			else if (operation == TMinus)
+				firstData->value.DataAsFloat -= secondData.value.DataAsShort;
+			else if (operation == TMult)
+				firstData->value.DataAsFloat *= secondData.value.DataAsShort;
+			else if (operation == TDiv)
+				firstData->value.DataAsFloat /= secondData.value.DataAsShort;
+
+			else if (operation == TLT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat < secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat > secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TLE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat <= secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat >= secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+
+			else if (operation == TEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat == secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TNEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsFloat != secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+		}
+	}
+	else if (resType == TYPE_INT)
+	{
+		if (secondData.type == TYPE_FLOAT)
+		{
+			if (operation == TPlus)
+				firstData->value.DataAsInt += secondData.value.DataAsFloat;
+			else if (operation == TMinus)
+				firstData->value.DataAsInt -= secondData.value.DataAsFloat;
+			else if (operation == TMult)
+				firstData->value.DataAsInt *= secondData.value.DataAsFloat;
+			else if (operation == TDiv)
+				firstData->value.DataAsInt /= secondData.value.DataAsFloat;
+
+			else if (operation == TLT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt < secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt > secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TLE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt <= secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt >= secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+
+			else if (operation == TEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt == secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TNEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt != secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+		}
+		else if (secondData.type == TYPE_INT)
+		{
+			if (operation == TPlus)
+				firstData->value.DataAsInt += secondData.value.DataAsInt;
+			else if (operation == TMinus)
+				firstData->value.DataAsInt -= secondData.value.DataAsInt;
+			else if (operation == TMult)
+				firstData->value.DataAsInt *= secondData.value.DataAsInt;
+			else if (operation == TDiv)
+				firstData->value.DataAsInt /= secondData.value.DataAsInt;
+			else if (operation == TMod)
+				firstData->value.DataAsInt %= secondData.value.DataAsInt;
+
+			else if (operation == TLT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt < secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt > secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TLE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt <= secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt >= secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+
+			else if (operation == TEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt == secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TNEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt != secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+		}
+		else
+		{
+			if (operation == TPlus)
+				firstData->value.DataAsInt += secondData.value.DataAsShort;
+			else if (operation == TMinus)
+				firstData->value.DataAsInt -= secondData.value.DataAsShort;
+			else if (operation == TMult)
+				firstData->value.DataAsInt *= secondData.value.DataAsShort;
+			else if (operation == TDiv)
+				firstData->value.DataAsInt /= secondData.value.DataAsShort;
+			else if (operation == TMod)
+				firstData->value.DataAsInt %= secondData.value.DataAsShort;
+
+			else if (operation == TLT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt < secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt > secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TLE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt <= secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt >= secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+
+			else if (operation == TEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt == secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TNEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsInt != secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+		}
+	}
+	else
+	{
+		if (secondData.type == TYPE_FLOAT)
+		{
+			if (operation == TPlus)
+				firstData->value.DataAsShort += secondData.value.DataAsFloat;
+			else if (operation == TMinus)
+				firstData->value.DataAsShort -= secondData.value.DataAsFloat;
+			else if (operation == TMult)
+				firstData->value.DataAsShort *= secondData.value.DataAsFloat;
+			else if (operation == TDiv)
+				firstData->value.DataAsShort /= secondData.value.DataAsFloat;
+
+			else if (operation == TLT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort < secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort > secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TLE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort <= secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort >= secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+
+			else if (operation == TEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort == secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TNEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort != secondData.value.DataAsFloat;
+				firstData->type = TYPE_INT;
+			}
+		}
+		else if (secondData.type == TYPE_INT)
+		{
+			if (operation == TPlus)
+				firstData->value.DataAsShort += secondData.value.DataAsInt;
+			else if (operation == TMinus)
+				firstData->value.DataAsShort -= secondData.value.DataAsInt;
+			else if (operation == TMult)
+				firstData->value.DataAsShort *= secondData.value.DataAsInt;
+			else if (operation == TDiv)
+				firstData->value.DataAsShort /= secondData.value.DataAsInt;
+			else if (operation == TMod)
+				firstData->value.DataAsShort %= secondData.value.DataAsInt;
+
+			else if (operation == TLT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort < secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort > secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TLE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort <= secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort >= secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+
+			else if (operation == TEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort == secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TNEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort != secondData.value.DataAsInt;
+				firstData->type = TYPE_INT;
+			}
+		}
+		else
+		{
+			if (operation == TPlus)
+				firstData->value.DataAsShort += secondData.value.DataAsShort;
+			else if (operation == TMinus)
+				firstData->value.DataAsShort -= secondData.value.DataAsShort;
+			else if (operation == TMult)
+				firstData->value.DataAsShort *= secondData.value.DataAsShort;
+			else if (operation == TDiv)
+				firstData->value.DataAsShort /= secondData.value.DataAsShort;
+			else if (operation == TMod)
+				firstData->value.DataAsShort %= secondData.value.DataAsShort;
+
+			else if (operation == TLT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort < secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGT)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort > secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TLE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort <= secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TGE)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort >= secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+
+			else if (operation == TEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort == secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+			else if (operation == TNEq)
+			{
+				firstData->value.DataAsInt = firstData->value.DataAsShort != secondData.value.DataAsShort;
+				firstData->type = TYPE_INT;
+			}
+		}
+	}
 
 }
 

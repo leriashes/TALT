@@ -529,14 +529,13 @@ void TDiagram::V(NData* res)			//Выражение
 
 	while (type == TEq || type == TNEq)
 	{
-		int znak = type - 51;
+		int operation = type;
 
 		type = scan->Scanner(lex);
 		Z(&secondData);
 		type = LookForward(1);
 
-		root->TypeCasting(res, secondData.type, OP_Name[znak]);
-		res->type = TYPE_INT;
+		root->TypeCasting(res, secondData, operation, OP_Name[operation - 51]);
 	}
 }
 
@@ -567,14 +566,13 @@ void TDiagram::Z(NData* res)			//Сравнение
 
 	while (type == TLT || type == TGT || type == TLE || type == TGE)
 	{
-		int znak = type - 51;
+		int operation = type;
 
 		type = scan->Scanner(lex);
 		Y(&secondData);
 		type = LookForward(1);
 
-		root->TypeCasting(res, secondData.type, OP_Name[znak]);
-		res->type = TYPE_INT;
+		root->TypeCasting(res, secondData, operation, OP_Name[operation - 51]);
 	}
 }
 
@@ -608,7 +606,7 @@ void TDiagram::M(NData* res)			//Множитель
 
 	while (type == TMult || type == TDiv || type == TMod)
 	{
-		int znak = type - 51;
+		int operation = type;
 
 		type = scan->Scanner(lex);
 		N(&secondData);
@@ -620,7 +618,7 @@ void TDiagram::M(NData* res)			//Множитель
 
 		type = LookForward(1);
 
-		root->TypeCasting(res, secondData.type, OP_Name[znak]);
+		root->TypeCasting(res, secondData, operation, OP_Name[operation - 51]);
 	}
 }
 
@@ -638,6 +636,7 @@ void TDiagram::Y(NData* res)			//Сдвиг
 {
 	LEX lex;
 	int type;
+	int operation;
 
 	NData secondData;
 
@@ -652,6 +651,7 @@ void TDiagram::Y(NData* res)			//Сдвиг
 
 	while (type == TLShift || type == TRShift)
 	{
+		operation = type;
 
 		type = scan->Scanner(lex);
 		L(&secondData);
@@ -661,6 +661,16 @@ void TDiagram::Y(NData* res)			//Сдвиг
 		type = LookForward(1);
 
 		res->type = TYPE_INT;
+
+		if (operation == TLShift)
+		{
+			res->value.DataAsInt = res->value.DataAsInt << secondData.value.DataAsInt;
+		}
+		else
+		{
+			res->value.DataAsInt = res->value.DataAsInt >> secondData.value.DataAsInt;
+		}
+		
 	}
 }
 
@@ -687,34 +697,34 @@ void TDiagram::L(NData* res)			//Слагаемое
 
 	while (type == TPlus || type == TMinus)
 	{
-		int znak = type;
+		int operation = type;
 
 		type = scan->Scanner(lex);
 		M(&secondData);
 		type = LookForward(1);
 
-		root->TypeCasting(res, secondData.type, OP_Name[znak - 51]);
+		root->TypeCasting(res, secondData, operation, OP_Name[operation - 51]);
 
 
-		if (res->type == TYPE_FLOAT)
+		/*if (res->type == TYPE_FLOAT)
 		{
 			if (secondData.type == TYPE_FLOAT)
 			{
-				if (znak == TPlus)
+				if (operation == TPlus)
 					res->value.DataAsFloat += secondData.value.DataAsFloat;
 				else
 					res->value.DataAsFloat -= secondData.value.DataAsFloat;
 			}
 			else if (secondData.type == TYPE_INT)
 			{
-				if (znak == TPlus)
+				if (operation == TPlus)
 					res->value.DataAsFloat += secondData.value.DataAsInt;
 				else
 					res->value.DataAsFloat -= secondData.value.DataAsInt;
 			}
 			else
 			{
-				if (znak == TPlus)
+				if (operation == TPlus)
 					res->value.DataAsFloat += secondData.value.DataAsShort;
 				else
 					res->value.DataAsFloat -= secondData.value.DataAsShort;
@@ -724,21 +734,21 @@ void TDiagram::L(NData* res)			//Слагаемое
 		{
 			if (secondData.type == TYPE_FLOAT)
 			{
-				if (znak == TPlus)
+				if (operation == TPlus)
 					res->value.DataAsInt += secondData.value.DataAsFloat;
 				else
 					res->value.DataAsInt -= secondData.value.DataAsFloat;
 			}
 			else if (secondData.type == TYPE_INT)
 			{
-				if (znak == TPlus)
+				if (operation == TPlus)
 					res->value.DataAsInt += secondData.value.DataAsInt;
 				else
 					res->value.DataAsInt -= secondData.value.DataAsInt;
 			}
 			else
 			{
-				if (znak == TPlus)
+				if (operation == TPlus)
 					res->value.DataAsInt += secondData.value.DataAsShort;
 				else
 					res->value.DataAsInt -= secondData.value.DataAsShort;
@@ -748,26 +758,26 @@ void TDiagram::L(NData* res)			//Слагаемое
 		{
 			if (secondData.type == TYPE_FLOAT)
 			{
-				if (znak == TPlus)
+				if (operation == TPlus)
 					res->value.DataAsShort += secondData.value.DataAsFloat;
 				else
 					res->value.DataAsShort -= secondData.value.DataAsFloat;
 			}
 			else if (secondData.type == TYPE_INT)
 			{
-				if (znak == TPlus)
+				if (operation == TPlus)
 					res->value.DataAsShort += secondData.value.DataAsInt;
 				else
 					res->value.DataAsShort -= secondData.value.DataAsInt;
 			}
 			else
 			{
-				if (znak == TPlus)
+				if (operation == TPlus)
 					res->value.DataAsShort += secondData.value.DataAsShort;
 				else
 					res->value.DataAsShort -= secondData.value.DataAsShort;
 			}
-		}
+		}*/
 	}
 }
 

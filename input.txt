@@ -1,9 +1,16 @@
-float im = 3.4;
-int a = 10-12+5+12;
+float im = 3.4 + 2.5*3;
+int a = 1000;
+int b = a * a * a;
+int c = b * a;
+
+
 short h = im;
 
 short fun ()
 {
+
+	
+a = 5 ==( 10 / 2);
 	{
 		im = 0.03;
 		float b;
