@@ -860,7 +860,6 @@ void TDiagram::N(NData* res)			//Со знаком
 		else if (type == TConstFloat)
 		{
 			res->type = TYPE_FLOAT;
-			float a = atof(lex);
 			res->value.DataAsFloat = atof(lex);
 		}
 		else
