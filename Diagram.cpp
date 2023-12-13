@@ -271,6 +271,7 @@ void TDiagram::F()			//Функция
 	if (root->flagInterpret)
 	{
 		root->SetCur(v);
+		v->CleanChild();
 	}
 }
 
@@ -969,6 +970,8 @@ void TDiagram::K(NData* res)			//Вызов функции
 		{
 			root->flagReturn = false;
 			root->flagInterpret = true;
+			funct->CleanChild();
+			root->SetCur(funct);
 		}
 		else
 		{

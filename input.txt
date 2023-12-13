@@ -16,6 +16,7 @@ short fun ()
 		{
 			short g = 34.1;
 			b = g;
+			return 321;
 		}
 		b = im;
 	}
@@ -40,16 +41,20 @@ int count = 0;
 
 int main()
 {
-	int k = 5;
+
 	int c = count;
+	/*int k = 5;
 	count = count + 1;
 
 	while (a < 3)
 	{
 		a = a + 1;
-	}
+		main();
+	}*/
 
 	fun();
+
+	return c;
 
 }
 
