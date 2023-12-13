@@ -38,6 +38,8 @@ public:
 	static TScanner* scan;
 	static Tree* cur;		//текущий элемент дерева
 
+	bool flagInterpret;
+
 	Tree(Tree* p, Tree* l, Tree* r, Node* data);
 	Tree(TScanner* scan);
 
