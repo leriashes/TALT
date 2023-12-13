@@ -203,6 +203,7 @@ void TDiagram::F()			//Функция
 {
 	LEX lex;
 	int type;
+	bool mainFunc = false;
 
 	type = scan->Scanner(lex);
 
@@ -229,6 +230,10 @@ void TDiagram::F()			//Функция
 	{
 		scan->PrintError("Ожидалось имя функции");
 	}
+	else if (type == TMain)
+	{
+		mainFunc = true;
+	}
 
 	Tree* v = root->SemInclude(lex, ObjFunct, semType);
 
@@ -246,7 +251,21 @@ void TDiagram::F()			//Функция
 		scan->PrintError("Ожидался символ ')'");
 	}
 
+	bool flagInterpretCopy =  root->flagInterpret;
+
+	if (flagInterpretCopy)
+	{
+		if (!mainFunc)
+		{
+			root->flagInterpret = false;
+		}
+
+		v->SetStart(scan->GetUK(), scan->GetLine(), scan->GetPos());
+	}
+
 	Q();
+
+	root->flagInterpret = flagInterpretCopy;
 
 	if (root->flagInterpret)
 	{

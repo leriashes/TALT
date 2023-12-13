@@ -19,11 +19,18 @@ struct NData {
 	DATA_VALUE value;	//значение
 };
 
+struct FStart {
+	int uk;
+	int line;
+	int pos;
+};
+
 struct Node
 {
 	OBJ_TYPE objType;	//тип объекта
 	LEX id;				//идентификатор объекта
 	NData data;			//тип значения и само значение
+	FStart funcStart; //начало функции
 };
 
 class Tree			//элемент семантической таблицы
@@ -75,5 +82,7 @@ public:
 	DATA_TYPE GetTypebyLex(int lexType);
 
 	DATA_VALUE* GetValue();
+
+	void SetStart(int uk, int line, int pos);
 };
 

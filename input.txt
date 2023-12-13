@@ -26,10 +26,19 @@ a = 5 ==( 10 / 2);
 
 	i = 6;
 
-	while (i < 7)
+	while (i < 18)
 	{
 		i = i + 1;
+break;
+		i = 12;
 	}
 
+	i = 21;
+
+}
+
+int main()
+{
+	int k = 5;
 }
 

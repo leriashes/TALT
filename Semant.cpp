@@ -848,4 +848,11 @@ DATA_VALUE* Tree::GetValue()
 	return &(node->data.value);
 }
 
+void Tree::SetStart(int uk, int line, int pos)
+{
+	node->funcStart.uk = uk;
+	node->funcStart.line = line;
+	node->funcStart.pos = pos;
+}
+
 
