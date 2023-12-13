@@ -69,6 +69,7 @@ public:
 	void SetCur(Tree* a);			//установить текущий узел дерева
 	Tree* GetCur();					//получить ссылку на текущий узел дерева
 	Tree* SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t);		//занесение идентификатора a в таблицу с типом t
+	Tree* SemInclude(Tree* first);
 	Tree* SemNewLevel();			//новый уровень (для составного оператора)
 	Tree* SemGetVar(LEX a);		//найти в таблице переменную с именем a и вернуть ссылку на соответсвующий элемент дерева
 	Tree* SemGetFunct(LEX a);		//найти в таблице функцию с именем a и вернуть ссылку на соответсвующий элемент дерева
@@ -84,5 +85,6 @@ public:
 	DATA_VALUE* GetValue();
 
 	void SetStart(int uk, int line, int pos);
+	FStart GetStart();
 };
 

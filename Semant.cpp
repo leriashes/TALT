@@ -183,6 +183,40 @@ Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
 	return cur;
 }
 
+Tree* Tree::SemInclude(Tree* first)
+{
+	if (!flagInterpret) return NULL;
+
+	if (first->node->objType == ObjFunct)
+	{
+		Tree* v;
+		Node n;
+
+		memcpy(n.id, first->node->id, strlen(first->node->id) + 1);
+		n.objType = first->node->objType;
+		n.data.type = first->node->data.type;
+		n.funcStart = first->node->funcStart;
+
+		if (this->node->objType == Empty && this->parent == NULL && this->left == NULL && this->right == NULL)
+			memcpy(node, &n, sizeof(Node));
+		else
+		{
+			cur->SetLeft(&n);
+			cur = cur->left;
+		}
+
+		v = cur;
+		memcpy(&n.id, &"", 2);
+		n.objType = Empty;
+
+		cur->SetRight(&n);
+		cur = cur->right;
+		return v;
+	}
+	else
+		return NULL;
+}
+
 Tree* Tree::SemGetVar(LEX a)
 {
 	if (!flagInterpret) return NULL;
@@ -853,6 +887,11 @@ void Tree::SetStart(int uk, int line, int pos)
 	node->funcStart.uk = uk;
 	node->funcStart.line = line;
 	node->funcStart.pos = pos;
+}
+
+FStart Tree::GetStart()
+{
+	return node->funcStart;
 }
 
 

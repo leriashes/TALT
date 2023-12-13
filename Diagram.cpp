@@ -911,10 +911,22 @@ void TDiagram::K(NData* res)			//Вызов функции
 		scan->PrintError("Ожидалось имя функции");
 	}
 
-	Tree* funct = root->SemGetFunct(lex);
+	Tree* funct = root->SemInclude(root->SemGetFunct(lex));
 
 	if (root->flagInterpret)
 	{
+		int uk = scan->GetUK();
+		int line = scan->GetLine();
+		int pos = scan->GetPos();
+
+		FStart fs = funct->GetStart();
+
+		scan->PutUK(fs.uk);
+		scan->SetLine(fs.line);
+		scan->SetPos(fs.pos);
+
+		A();
+
 		res->type = funct->GetType();
 
 		if (res->type == TYPE_SHORT)
@@ -929,6 +941,10 @@ void TDiagram::K(NData* res)			//Вызов функции
 		{
 			res->value.DataAsFloat = funct->GetValue()->DataAsFloat;
 		}
+
+		scan->PutUK(uk);
+		scan->SetLine(line);
+		scan->SetPos(pos);
 	}
 	
 	type = scan->Scanner(lex);

@@ -1,5 +1,5 @@
 float im = 3.4 + 2.5*3;
-int a = 1000;
+int a = 0;
 int b = a * a * a;
 int c = b * a;
 
@@ -10,7 +10,6 @@ short fun ()
 {
 
 	
-a = 5 ==( 10 / 2);
 	{
 		im = 0.03;
 		float b;
@@ -29,7 +28,7 @@ a = 5 ==( 10 / 2);
 	while (i < 18)
 	{
 		i = i + 1;
-break;
+		break;
 		i = 12;
 	}
 
@@ -40,5 +39,11 @@ break;
 int main()
 {
 	int k = 5;
+
+	while (a < 3)
+	{
+		a = a + 1;
+		main();
+	}
 }
 

@@ -32,7 +32,7 @@ private:
 
 public:
 
-	bool DEBUG = false;
+	bool DEBUG = true;
 	TDiagram(TScanner* s) { scan = s; root = new Tree(scan); }
 	~TDiagram() {
 		if (DEBUG) {
