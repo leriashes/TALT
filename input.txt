@@ -36,14 +36,20 @@ short fun ()
 
 }
 
+int count = 0;
+
 int main()
 {
 	int k = 5;
+	int c = count;
+	count = count + 1;
 
 	while (a < 3)
 	{
 		a = a + 1;
-		main();
 	}
+
+	fun();
+
 }
 

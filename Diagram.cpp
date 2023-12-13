@@ -45,6 +45,7 @@ void TDiagram::S()			//Программа
 	int type;
 
 	root->flagInterpret = true;
+	root->flagReturn = false;
 
 	type = LookForward(1);
 
@@ -554,7 +555,25 @@ void TDiagram::R()			//return
 
 	if (root->flagInterpret)
 	{
-		root->TypeCastingAssign(root->GetCur()->GetCurrentFunct()->GetType(), data);
+		DATA_TYPE ftype = root->GetCur()->GetCurrentFunct()->GetType();
+
+		data = root->TypeCastingAssign(ftype, data);
+
+		if (ftype == TYPE_SHORT)
+		{
+			root->GetCur()->GetCurrentFunct()->GetValue()->DataAsShort = data.value.DataAsShort;
+		}
+		else if (ftype == TYPE_INT)
+		{
+			root->GetCur()->GetCurrentFunct()->GetValue()->DataAsInt = data.value.DataAsInt;
+		}
+		else
+		{
+			root->GetCur()->GetCurrentFunct()->GetValue()->DataAsFloat = data.value.DataAsFloat;
+		}
+
+		root->flagInterpret = false;
+		root->flagReturn = true;
 	}
 }
 
@@ -945,6 +964,16 @@ void TDiagram::K(NData* res)			//Вызов функции
 		scan->PutUK(uk);
 		scan->SetLine(line);
 		scan->SetPos(pos);
+
+		if (root->flagReturn)
+		{
+			root->flagReturn = false;
+			root->flagInterpret = true;
+		}
+		else
+		{
+			scan->PrintError("Отсутствует возвращаемое значение функции");
+		}
 	}
 	
 	type = scan->Scanner(lex);

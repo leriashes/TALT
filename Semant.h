@@ -45,7 +45,8 @@ public:
 	static TScanner* scan;
 	static Tree* cur;		//текущий элемент дерева
 
-	bool flagInterpret;
+	bool flagInterpret = true;
+	bool flagReturn = false;
 
 	Tree(Tree* p, Tree* l, Tree* r, Node* data);
 	Tree(TScanner* scan);
