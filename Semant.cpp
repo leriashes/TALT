@@ -143,6 +143,8 @@ Tree* Tree::GetCur()
 
 Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
 {
+	if (!flagInterpret) return NULL;
+
 	if (DupControl(cur, a))
 	{
 		printf("\n\n\nяелюмрхвеяйне депебн\n\n");
@@ -183,6 +185,8 @@ Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
 
 Tree* Tree::SemGetVar(LEX a)
 {
+	if (!flagInterpret) return NULL;
+
 	Tree* v = FindUp(cur, a);
 
 	if (v == NULL)
@@ -208,6 +212,8 @@ Tree* Tree::SemGetVar(LEX a)
 
 Tree* Tree::SemNewLevel()
 {
+	if (!flagInterpret) return NULL;
+
 	Node n;
 
 	memcpy(&n.id, &"", 2);
@@ -225,6 +231,8 @@ Tree* Tree::SemNewLevel()
 
 Tree* Tree::SemGetFunct(LEX a)
 {
+	if (!flagInterpret) return NULL;
+
 	Tree* v = FindUp(cur, a);
 
 	if (v == NULL)
@@ -261,6 +269,8 @@ DATA_TYPE Tree::GetType()
 
 void Tree::TypeCasting(NData* firstData, NData secondData, int operation, LEX operationName)
 {
+	if (!flagInterpret) return;
+
 	DATA_TYPE resType = firstData->type;
 
 	if (resType != secondData.type)

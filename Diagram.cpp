@@ -105,54 +105,60 @@ void TDiagram::D()			//Описание данных
 //------ float -------------------.--- a ------------------------ ; --->
 //
 {
-	if (root->flagInterpret)
+	LEX lex;
+	int type;
+
+	type = scan->Scanner(lex);
+
+	if (type != TLong && type != TShort && type != TInt && type != TFloat)
 	{
-		LEX lex;
-		int type;
+		scan->PrintError("Ожидался тип");
+	}
+
+	DATA_TYPE semType = root->GetTypebyLex(type);
+
+	if (type == TLong || type == TShort)
+	{
+		type = LookForward(1);
+
+		if (type == TInt)
+		{
+			type = scan->Scanner(lex);
+		}
+	}
+
+	do
+	{
+		type = scan->Scanner(lex);
+
+		if (type != TIdent)
+		{
+			scan->PrintError("Ожидался идентификатор");
+		}
+
+		Tree* v = root->SemInclude(lex, ObjVar, semType);
+
+		if (root->flagInterpret)
+		{
+			printf("\n\nОписание переменной: %s", lex);
+		}
 
 		type = scan->Scanner(lex);
 
-		if (type != TLong && type != TShort && type != TInt && type != TFloat)
+		if (type == TSave)
 		{
-			scan->PrintError("Ожидался тип");
-		}
+			NData data;
+			V(&data);
 
-		DATA_TYPE semType = root->GetTypebyLex(type);
-
-		if (type == TLong || type == TShort)
-		{
-			type = LookForward(1);
-
-			if (type == TInt)
+			if (root->flagInterpret)
 			{
-				type = scan->Scanner(lex);
-			}
-		}
-
-		do
-		{
-			type = scan->Scanner(lex);
-
-			if (type != TIdent)
-			{
-				scan->PrintError("Ожидался идентификатор");
-			}
-
-			Tree* v = root->SemInclude(lex, ObjVar, semType);
-
-			printf("\n\nОписание переменной: %s", lex);
-
-			type = scan->Scanner(lex);
-
-			if (type == TSave)
-			{
-				NData data;
-				V(&data);
-
 				data = root->TypeCastingAssign(semType, data);
+			}
 
-				type = scan->Scanner(lex);
+			type = scan->Scanner(lex);
 
+			if (root->flagInterpret)
+			{
 				if (v->GetType() == TYPE_SHORT)
 				{
 					v->GetValue()->DataAsShort = data.value.DataAsShort;
@@ -165,20 +171,21 @@ void TDiagram::D()			//Описание данных
 				{
 					v->GetValue()->DataAsFloat = data.value.DataAsFloat;
 				}
+
 			}
-
-			if (DEBUG)
-			{
-				printf("\n\nСЕМАНТИЧЕСКОЕ ДЕРЕВО\n\n");
-				PrintTree();
-			}
-
-		} while (type == TComma);
-
-		if (type != TSemicolon)
-		{
-			scan->PrintError("Ожидался символ ';'");
 		}
+
+		if (DEBUG)
+		{
+			printf("\n\nСЕМАНТИЧЕСКОЕ ДЕРЕВО\n\n");
+			PrintTree();
+		}
+
+	} while (type == TComma);
+
+	if (type != TSemicolon)
+	{
+		scan->PrintError("Ожидался символ ';'");
 	}
 }
 
@@ -194,55 +201,55 @@ void TDiagram::F()			//Функция
 //								 ---- main ---				  -----
 //
 {
+	LEX lex;
+	int type;
+
+	type = scan->Scanner(lex);
+
+	if (type != TLong && type != TShort && type != TInt && type != TFloat)
+	{
+		scan->PrintError("Ожидался тип");
+	}
+
+	DATA_TYPE semType = root->GetTypebyLex(type);
+
+	if (type == TLong || type == TShort)
+	{
+		type = LookForward(1);
+
+		if (type == TInt)
+		{
+			type = scan->Scanner(lex);
+		}
+	}
+
+	type = scan->Scanner(lex);
+
+	if (type != TMain && type != TIdent)
+	{
+		scan->PrintError("Ожидалось имя функции");
+	}
+
+	Tree* v = root->SemInclude(lex, ObjFunct, semType);
+
+	type = scan->Scanner(lex);
+
+	if (type != TLS)
+	{
+		scan->PrintError("Ожидался символ '('");
+	}
+
+	type = scan->Scanner(lex);
+
+	if (type != TRS)
+	{
+		scan->PrintError("Ожидался символ ')'");
+	}
+
+	Q();
+
 	if (root->flagInterpret)
 	{
-		LEX lex;
-		int type;
-
-		type = scan->Scanner(lex);
-
-		if (type != TLong && type != TShort && type != TInt && type != TFloat)
-		{
-			scan->PrintError("Ожидался тип");
-		}
-
-		DATA_TYPE semType = root->GetTypebyLex(type);
-
-		if (type == TLong || type == TShort)
-		{
-			type = LookForward(1);
-
-			if (type == TInt)
-			{
-				type = scan->Scanner(lex);
-			}
-		}
-
-		type = scan->Scanner(lex);
-
-		if (type != TMain && type != TIdent)
-		{
-			scan->PrintError("Ожидалось имя функции");
-		}
-
-		Tree* v = root->SemInclude(lex, ObjFunct, semType);
-
-		type = scan->Scanner(lex);
-
-		if (type != TLS)
-		{
-			scan->PrintError("Ожидался символ '('");
-		}
-
-		type = scan->Scanner(lex);
-
-		if (type != TRS)
-		{
-			scan->PrintError("Ожидался символ ')'");
-		}
-
-		Q();
-
 		root->SetCur(v);
 	}
 }
@@ -260,47 +267,48 @@ void TDiagram::Q()			//Составной оператор
 //-- { ---.------------------- } ---->
 //
 {
-	if (root->flagInterpret)
+	LEX lex;
+	int type;
+
+	type = scan->Scanner(lex);
+
+	if (type != TFLS)
 	{
-		LEX lex;
-		int type;
+		scan->PrintError("Ожидался символ '{'");
+	}
 
-		type = scan->Scanner(lex);
+	Tree* v = root->SemNewLevel();
 
-		if (type != TFLS)
+	type = LookForward(1);
+
+	while (type == TShort || type == TLong || type == TInt || type == TFloat || type == TFLS || type == TWhile || type == TIdent || type == TReturn || type == TBreak || type == TSemicolon || type == TMain)
+	{
+
+		if (type == TShort || type == TLong || type == TInt || type == TFloat)
 		{
-			scan->PrintError("Ожидался символ '{'");
+			D();
 		}
-
-		Tree* v = root->SemNewLevel();
+		else
+		{
+			A();
+		}
 
 		type = LookForward(1);
+	}
 
-		while (type == TShort || type == TLong || type == TInt || type == TFloat || type == TFLS || type == TWhile || type == TIdent || type == TReturn || type == TBreak || type == TSemicolon || type == TMain)
-		{
+	type = scan->Scanner(lex);
 
-			if (type == TShort || type == TLong || type == TInt || type == TFloat)
-			{
-				D();
-			}
-			else
-			{
-				A();
-			}
+	if (type != TFRS)
+	{
+		scan->PrintError("Ожидался символ '}'");
+	}
 
-			type = LookForward(1);
-		}
-
-		type = scan->Scanner(lex);
-
-		if (type != TFRS)
-		{
-			scan->PrintError("Ожидался символ '}'");
-		}
-
+	if (root->flagInterpret)
+	{
 		root->SetCur(v);
 
 		v->CleanChild();
+
 		if (DEBUG)
 		{
 			printf("\n\nОСВОБОЖДЕНИЕ ПАМЯТИ - конец составного оператора");
@@ -335,57 +343,54 @@ void TDiagram::A()			//Оператор
 //               -----       
 //
 {
-	if (root->flagInterpret)
+	LEX lex;
+	int type;
+
+	NData res;
+
+	type = LookForward(1);
+
+	if (type == TFLS)
 	{
-		LEX lex;
-		int type;
-
-		NData res;
-
-		type = LookForward(1);
-
-		if (type == TFLS)
+		Q();
+	}
+	else if (type == TWhile)
+	{
+		W();
+	}
+	else
+	{
+		if (type == TReturn)
 		{
-			Q();
+			R();
 		}
-		else if (type == TWhile)
+		else if (type == TBreak)
 		{
-			W();
+			B();
 		}
-		else
+		else if (type == TMain)
 		{
-			if (type == TReturn)
+			K(&res);
+		}
+		else if (type == TIdent)
+		{
+			type = LookForward(2);
+
+			if (type == TSave)
 			{
-				R();
+				P();
 			}
-			else if (type == TBreak)
-			{
-				B();
-			}
-			else if (type == TMain)
+			else
 			{
 				K(&res);
 			}
-			else if (type == TIdent)
-			{
-				type = LookForward(2);
+		}
 
-				if (type == TSave)
-				{
-					P();
-				}
-				else
-				{
-					K(&res);
-				}
-			}
+		type = scan->Scanner(lex);
 
-			type = scan->Scanner(lex);
-
-			if (type != TSemicolon)
-			{
-				scan->PrintError("Ожидался символ ';'");
-			}
+		if (type != TSemicolon)
+		{
+			scan->PrintError("Ожидался символ ';'");
 		}
 	}
 }
@@ -399,37 +404,55 @@ void TDiagram::W()			//while
 //					   -----         -----
 //
 {
+	LEX lex;
+	int type;
+
+	type = scan->Scanner(lex);
+
+	if (type != TWhile)
+	{
+		scan->PrintError("Ожидался оператор 'while'");
+	}
+
+	bool flagInterpretCopy = root->flagInterpret;
+
+	int uk_start = scan->GetUK();
+	int pos_start = scan->GetPos();
+	int line_start = scan->GetLine();
+
+WStart:
+
+	type = scan->Scanner(lex);
+
+	if (type != TLS)
+	{
+		scan->PrintError("Ожидался символ '('");
+	}
+
+	NData data;
+	V(&data);
+
+	root->flagInterpret = root->flagInterpret && data.value.DataAsInt != 0;
+
+	type = scan->Scanner(lex);
+
+	if (type != TRS)
+	{
+		scan->PrintError("Ожидался символ ')'");
+	}
+
+	A();
+
 	if (root->flagInterpret)
 	{
-		LEX lex;
-		int type;
+		scan->PutUK(uk_start);
+		scan->SetLine(line_start);
+		scan->SetPos(pos_start);
 
-		type = scan->Scanner(lex);
-
-		if (type != TWhile)
-		{
-			scan->PrintError("Ожидался оператор 'while'");
-		}
-
-		type = scan->Scanner(lex);
-
-		if (type != TLS)
-		{
-			scan->PrintError("Ожидался символ '('");
-		}
-
-		NData data;
-		V(&data);
-
-		type = scan->Scanner(lex);
-
-		if (type != TRS)
-		{
-			scan->PrintError("Ожидался символ ')'");
-		}
-
-		A();
+		goto WStart;
 	}
+
+	root->flagInterpret = flagInterpretCopy;
 }
 
 
@@ -441,32 +464,35 @@ void TDiagram::P()			//Присваивание
 //					 ----- 
 //
 {
+	LEX lex;
+	int type;
+
+	type = scan->Scanner(lex);
+
+	if (type != TIdent)
+	{
+		scan->PrintError("Ожидался идентификатор");
+	}
+
+	Tree* ident = root->SemGetVar(lex);
+
 	if (root->flagInterpret)
 	{
-		LEX lex;
-		int type;
-
-		type = scan->Scanner(lex);
-
-		if (type != TIdent)
-		{
-			scan->PrintError("Ожидался идентификатор");
-		}
-
-		Tree* ident = root->SemGetVar(lex);
-
 		printf("\n\nПрисваивание значения переменной: %s", lex);
+	}
 
-		type = scan->Scanner(lex);
+	type = scan->Scanner(lex);
 
-		if (type != TSave)
-		{
-			scan->PrintError("Ожидался знак =");
-		}
+	if (type != TSave)
+	{
+		scan->PrintError("Ожидался знак =");
+	}
 
-		NData data;
-		V(&data);
+	NData data;
+	V(&data);
 
+	if (root->flagInterpret)
+	{
 		data = root->TypeCastingAssign(ident->GetType(), data);
 
 		if (ident->GetType() == TYPE_SHORT)
@@ -494,21 +520,21 @@ void TDiagram::R()			//return
 //					----- 
 //
 {
+	LEX lex;
+	int type;
+
+	type = scan->Scanner(lex);
+
+	if (type != TReturn)
+	{
+		scan->PrintError("Ожидался оператор 'return'");
+	}
+
+	NData data;
+	V(&data);
+
 	if (root->flagInterpret)
 	{
-		LEX lex;
-		int type;
-
-		type = scan->Scanner(lex);
-
-		if (type != TReturn)
-		{
-			scan->PrintError("Ожидался оператор 'return'");
-		}
-
-		NData data;
-		V(&data);
-
 		root->TypeCastingAssign(root->GetCur()->GetCurrentFunct()->GetType(), data);
 	}
 }
@@ -520,17 +546,19 @@ void TDiagram::B()			//break
 //------ break -------->
 //
 {
+	LEX lex;
+	int type;
+
+	type = scan->Scanner(lex);
+
+	if (type != TBreak)
+	{
+		scan->PrintError("Ожидался оператор 'break'");
+	}
+
 	if (root->flagInterpret)
 	{
-		LEX lex;
-		int type;
-
-		type = scan->Scanner(lex);
-
-		if (type != TBreak)
-		{
-			scan->PrintError("Ожидался оператор 'break'");
-		}
+		root->flagInterpret = false;
 	}
 }
 
@@ -546,27 +574,24 @@ void TDiagram::V(NData* res)			//Выражение
 //   -----            
 //
 {
-	if (root->flagInterpret)
+	LEX lex;
+	int type;
+
+	NData secondData;
+
+	Z(res);
+
+	type = LookForward(1);
+
+	while (type == TEq || type == TNEq)
 	{
-		LEX lex;
-		int type;
+		int operation = type;
 
-		NData secondData;
-
-		Z(res);
-
+		type = scan->Scanner(lex);
+		Z(&secondData);
 		type = LookForward(1);
 
-		while (type == TEq || type == TNEq)
-		{
-			int operation = type;
-
-			type = scan->Scanner(lex);
-			Z(&secondData);
-			type = LookForward(1);
-
-			root->TypeCasting(res, secondData, operation, OP_Name[operation - 51]);
-		}
+		root->TypeCasting(res, secondData, operation, OP_Name[operation - 51]);
 	}
 }
 
@@ -586,27 +611,24 @@ void TDiagram::Z(NData* res)			//Сравнение
 //   -----            
 //
 {
-	if (root->flagInterpret)
+	LEX lex;
+	int type;
+
+	NData secondData;
+
+	Y(res);
+
+	type = LookForward(1);
+
+	while (type == TLT || type == TGT || type == TLE || type == TGE)
 	{
-		LEX lex;
-		int type;
+		int operation = type;
 
-		NData secondData;
-
-		Y(res);
-
+		type = scan->Scanner(lex);
+		Y(&secondData);
 		type = LookForward(1);
 
-		while (type == TLT || type == TGT || type == TLE || type == TGE)
-		{
-			int operation = type;
-
-			type = scan->Scanner(lex);
-			Y(&secondData);
-			type = LookForward(1);
-
-			root->TypeCasting(res, secondData, operation, OP_Name[operation - 51]);
-		}
+		root->TypeCasting(res, secondData, operation, OP_Name[operation - 51]);
 	}
 }
 
@@ -624,38 +646,35 @@ void TDiagram::M(NData* res)			//Множитель
 //   -----            
 //
 {
-	if (root->flagInterpret)
+	LEX lex;
+	int type;
+
+	NData secondData;
+
+	N(res);
+
+	type = LookForward(1);
+
+	if (type == TMod)
 	{
-		LEX lex;
-		int type;
+		root->CheckTypeInt(res->type);
+	}
 
-		NData secondData;
+	while (type == TMult || type == TDiv || type == TMod)
+	{
+		int operation = type;
 
-		N(res);
-
-		type = LookForward(1);
+		type = scan->Scanner(lex);
+		N(&secondData);
 
 		if (type == TMod)
 		{
-			root->CheckTypeInt(res->type);
+			root->CheckTypeInt(secondData.type);
 		}
 
-		while (type == TMult || type == TDiv || type == TMod)
-		{
-			int operation = type;
+		type = LookForward(1);
 
-			type = scan->Scanner(lex);
-			N(&secondData);
-
-			if (type == TMod)
-			{
-				root->CheckTypeInt(secondData.type);
-			}
-
-			type = LookForward(1);
-
-			root->TypeCasting(res, secondData, operation, OP_Name[operation - 51]);
-		}
+		root->TypeCasting(res, secondData, operation, OP_Name[operation - 51]);
 	}
 }
 
@@ -671,36 +690,36 @@ void TDiagram::Y(NData* res)			//Сдвиг
 //   -----            
 //
 {
-	if (root->flagInterpret)
+	LEX lex;
+	int type;
+	int operation;
+
+	NData secondData;
+
+	L(res);
+
+	type = LookForward(1);
+
+	if (type == TLShift || type == TRShift)
 	{
-		LEX lex;
-		int type;
-		int operation;
+		root->CheckTypeInt(res->type);
+	}
 
-		NData secondData;
+	while (type == TLShift || type == TRShift)
+	{
+		operation = type;
 
-		L(res);
+		type = scan->Scanner(lex);
+		L(&secondData);
+
+		root->CheckTypeInt(secondData.type);
 
 		type = LookForward(1);
 
-		if (type == TLShift || type == TRShift)
+		res->type = TYPE_INT;
+
+		if (root->flagInterpret)
 		{
-			root->CheckTypeInt(res->type);
-		}
-
-		while (type == TLShift || type == TRShift)
-		{
-			operation = type;
-
-			type = scan->Scanner(lex);
-			L(&secondData);
-
-			root->CheckTypeInt(secondData.type);
-
-			type = LookForward(1);
-
-			res->type = TYPE_INT;
-
 			if (operation == TLShift)
 			{
 				res->value.DataAsInt = res->value.DataAsInt << secondData.value.DataAsInt;
@@ -709,7 +728,6 @@ void TDiagram::Y(NData* res)			//Сдвиг
 			{
 				res->value.DataAsInt = res->value.DataAsInt >> secondData.value.DataAsInt;
 			}
-
 		}
 	}
 }
@@ -726,27 +744,24 @@ void TDiagram::L(NData* res)			//Слагаемое
 //   -----            
 //
 {
-	if (root->flagInterpret)
+	LEX lex;
+	int type;
+
+	NData secondData;
+
+	M(res);
+
+	type = LookForward(1);
+
+	while (type == TPlus || type == TMinus)
 	{
-		LEX lex;
-		int type;
+		int operation = type;
 
-		NData secondData;
-
-		M(res);
-
+		type = scan->Scanner(lex);
+		M(&secondData);
 		type = LookForward(1);
 
-		while (type == TPlus || type == TMinus)
-		{
-			int operation = type;
-
-			type = scan->Scanner(lex);
-			M(&secondData);
-			type = LookForward(1);
-
-			root->TypeCasting(res, secondData, operation, OP_Name[operation - 51]);
-		}
+		root->TypeCasting(res, secondData, operation, OP_Name[operation - 51]);
 	}
 }
 
@@ -765,94 +780,95 @@ void TDiagram::N(NData* res)			//Со знаком
 //							  -----			 
 //
 {
-	if (root->flagInterpret)
+	LEX lex;
+	int type;
+
+	bool mns = false;
+
+	type = LookForward(1);
+
+	if (type == TPlus || type == TMinus)
 	{
-		LEX lex;
-		int type;
+		type = scan->Scanner(lex);
 
-		bool mns = false;
-
-		type = LookForward(1);
-
-		if (type == TPlus || type == TMinus)
+		if (type == TMinus)
 		{
-			type = scan->Scanner(lex);
-
-			if (type == TMinus)
-			{
-				mns = true;
-			}
+			mns = true;
 		}
+	}
 
-		type = LookForward(1);
+	type = LookForward(1);
+
+	if (type == TLS)
+	{
+		type = scan->Scanner(lex);
+
+		V(res);
+
+		type = scan->Scanner(lex);
+
+		if (type != TRS)
+		{
+			scan->PrintError("Ожидался символ ')'");
+		}
+	}
+	else if (type == TMain)
+	{
+		K(res);
+	}
+	else if (type == TIdent)
+	{
+		type = LookForward(2);
 
 		if (type == TLS)
 		{
-			type = scan->Scanner(lex);
-
-			V(res);
-
-			type = scan->Scanner(lex);
-
-			if (type != TRS)
-			{
-				scan->PrintError("Ожидался символ ')'");
-			}
-		}
-		else if (type == TMain)
-		{
 			K(res);
-		}
-		else if (type == TIdent)
-		{
-			type = LookForward(2);
-
-			if (type == TLS)
-			{
-				K(res);
-			}
-			else
-			{
-				type = scan->Scanner(lex);
-				res->type = root->SemGetVar(lex)->GetType();
-				res->value = *root->SemGetVar(lex)->GetValue();
-			}
-
 		}
 		else
 		{
 			type = scan->Scanner(lex);
 
-			if (type == TConstInt)
+			if (root->flagInterpret)
 			{
-				res->type = TYPE_INT;
-				res->value.DataAsInt = atoi(lex);
-			}
-			else if (type == TConstFloat)
-			{
-				res->type = TYPE_FLOAT;
-				res->value.DataAsFloat = atof(lex);
-			}
-			else
-			{
-				scan->PrintError("Ожидалось выражение");
+				res->type = root->SemGetVar(lex)->GetType();
+				res->value = *root->SemGetVar(lex)->GetValue();
 			}
 		}
 
-		if (mns)
+	}
+	else
+	{
+		type = scan->Scanner(lex);
+
+		if (type == TConstInt)
 		{
-			if (res->type == TYPE_SHORT)
-			{
-				res->value.DataAsShort = -res->value.DataAsShort;
-			}
-			else if (res->type == TYPE_INT)
-			{
-				res->value.DataAsInt = -res->value.DataAsInt;
-			}
-			else
-			{
-				res->value.DataAsFloat = -res->value.DataAsFloat;
-			}
+			res->type = TYPE_INT;
+			res->value.DataAsInt = atoi(lex);
+		}
+		else if (type == TConstFloat)
+		{
+			res->type = TYPE_FLOAT;
+			res->value.DataAsFloat = atof(lex);
+		}
+		else
+		{
+			scan->PrintError("Ожидалось выражение");
+		}
+	}
+
+	if (root->flagInterpret && mns)
+	{
+		if (res->type == TYPE_SHORT)
+		{
+			res->value.DataAsShort = -res->value.DataAsShort;
+		}
+		else if (res->type == TYPE_INT)
+		{
+			res->value.DataAsInt = -res->value.DataAsInt;
+		}
+		else
+		{
+			res->value.DataAsFloat = -res->value.DataAsFloat;
 		}
 	}
 }
@@ -866,19 +882,20 @@ void TDiagram::K(NData* res)			//Вызов функции
 //		---- main ---				 
 //
 {
+	LEX lex;
+	int type;
+
+	type = scan->Scanner(lex);
+
+	if (type != TMain && type != TIdent)
+	{
+		scan->PrintError("Ожидалось имя функции");
+	}
+
+	Tree* funct = root->SemGetFunct(lex);
+
 	if (root->flagInterpret)
 	{
-		LEX lex;
-		int type;
-
-		type = scan->Scanner(lex);
-
-		if (type != TMain && type != TIdent)
-		{
-			scan->PrintError("Ожидалось имя функции");
-		}
-
-		Tree* funct = root->SemGetFunct(lex);
 		res->type = funct->GetType();
 
 		if (res->type == TYPE_SHORT)
@@ -893,19 +910,19 @@ void TDiagram::K(NData* res)			//Вызов функции
 		{
 			res->value.DataAsFloat = funct->GetValue()->DataAsFloat;
 		}
+	}
+	
+	type = scan->Scanner(lex);
 
-		type = scan->Scanner(lex);
+	if (type != TLS)
+	{
+		scan->PrintError("Ожидался символ '('");
+	}
 
-		if (type != TLS)
-		{
-			scan->PrintError("Ожидался символ '('");
-		}
+	type = scan->Scanner(lex);
 
-		type = scan->Scanner(lex);
-
-		if (type != TRS)
-		{
-			scan->PrintError("Ожидался символ ')'");
-		}
+	if (type != TRS)
+	{
+		scan->PrintError("Ожидался символ ')'");
 	}
 }
