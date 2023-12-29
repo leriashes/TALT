@@ -1,5 +1,6 @@
 #include "Semant.h"
 Tree* Tree::cur = (Tree*)NULL;
+Tree* Tree::lastcur = (Tree*)NULL;
 TScanner* Tree::scan = (TScanner*)NULL;
 
 Tree::Tree(TScanner* scan)
@@ -16,6 +17,7 @@ Tree::Tree(TScanner* scan)
 
 
 	cur = this;
+	lastcur = this;
 }
 
 Tree::Tree(Tree* p, Tree* l, Tree* r, Node* data)
@@ -201,8 +203,11 @@ Tree* Tree::SemInclude(Tree* first)
 			memcpy(node, &n, sizeof(Node));
 		else
 		{
-			cur->SetLeft(&n);
-			cur = cur->left;
+			Tree* lastleft = first->left;
+			first->SetLeft(&n);
+			lastcur = cur;
+			cur = first->left;
+			cur->left = lastleft;
 		}
 
 		v = cur;
@@ -892,6 +897,16 @@ void Tree::SetStart(int uk, int line, int pos)
 FStart Tree::GetStart()
 {
 	return node->funcStart;
+}
+
+void Tree::Back()
+{
+	cur->CleanChild();
+	Tree* lastleft = cur->left;
+	cur = cur->parent;
+	delete cur->left;
+	cur->left = lastleft;
+	cur = lastcur;
 }
 
 

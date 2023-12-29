@@ -16,7 +16,7 @@ short fun ()
 		{
 			short g = 34.1;
 			b = g;
-			return 321;
+			
 		}
 		b = im;
 	}
@@ -26,14 +26,15 @@ short fun ()
 
 	i = 6;
 
-	while (i < 18)
+	while (1 < 2)
 	{
 		i = i + 1;
-		break;
 		i = 12;
 	}
 
 	i = 21;
+
+	return i;
 
 }
 

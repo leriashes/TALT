@@ -44,6 +44,7 @@ private:
 public:
 	static TScanner* scan;
 	static Tree* cur;		//текущий элемент дерева
+	static Tree* lastcur;
 
 	bool flagInterpret = true;
 	bool flagReturn = false;
@@ -87,5 +88,6 @@ public:
 
 	void SetStart(int uk, int line, int pos);
 	FStart GetStart();
+	void Back();
 };
 

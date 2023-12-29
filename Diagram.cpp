@@ -931,7 +931,8 @@ void TDiagram::K(NData* res)			//Вызов функции
 		scan->PrintError("Ожидалось имя функции");
 	}
 
-	Tree* funct = root->SemInclude(root->SemGetFunct(lex));
+	Tree* sfunct = root->SemGetFunct(lex);
+	Tree* funct = root->SemInclude(sfunct);
 
 	if (root->flagInterpret)
 	{
@@ -972,11 +973,14 @@ void TDiagram::K(NData* res)			//Вызов функции
 			root->flagInterpret = true;
 			funct->CleanChild();
 			root->SetCur(funct);
+			root->Back();
 		}
 		else
 		{
 			scan->PrintError("Отсутствует возвращаемое значение функции");
 		}
+
+
 	}
 	
 	type = scan->Scanner(lex);
